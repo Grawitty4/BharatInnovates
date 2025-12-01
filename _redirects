@@ -1,0 +1,10 @@
+# Redirect all /allapplications routes to allapplications.html
+/allapplications    /allapplications.html    200
+/allapplications/*  /allapplications.html    200
+
+# Redirect ApplicationId routes to index.html
+/BHAR-*  /index.html  200
+
+# SPA fallback - redirect everything else to index.html
+/*  /index.html  200
+
