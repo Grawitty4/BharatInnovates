@@ -22,116 +22,122 @@
         <div class="main-layout">
             <!-- Left Sidebar - Filters -->
             <aside class="sidebar">
-                <div class="sidebar-header">
-                    <h2>Filters</h2>
-                    <button id="clearFiltersBtn" class="clear-filters-btn">Clear All</button>
-                </div>
-                
-                <!-- Search -->
-                <div class="filter-section">
-                    <h3>Search</h3>
-                    <div class="search-box-sidebar">
-                        <input type="text" id="searchInput" placeholder="Search applications...">
-                        <button id="searchBtn">🔍</button>
+                <!-- Fixed Top Section -->
+                <div class="sidebar-top">
+                    <div class="sidebar-header">
+                        <h2>Filters</h2>
+                        <button id="clearFiltersBtn" class="clear-filters-btn">Clear All</button>
                     </div>
-                </div>
-
-                <!-- Stats -->
-                <div class="filter-section">
-                    <div class="stats-sidebar">
-                        <div class="stat-item">
-                            <span class="stat-label">Total:</span>
-                            <span class="stat-value" id="totalCount">0</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Showing:</span>
-                            <span class="stat-value" id="showingCount">0</span>
+                    
+                    <!-- Search -->
+                    <div class="filter-section">
+                        <h3>Search</h3>
+                        <div class="search-box-sidebar">
+                            <input type="text" id="searchInput" placeholder="Search applications...">
+                            <button id="searchBtn">🔍</button>
                         </div>
                     </div>
-                </div>
 
-                <!-- Segment Filter -->
-                <div class="filter-section">
-                    <h3>Segment</h3>
-                    <div class="checkbox-group" id="segmentFilterGroup">
-                        <!-- Populated by JavaScript -->
+                    <!-- Stats -->
+                    <div class="filter-section">
+                        <div class="stats-sidebar">
+                            <div class="stat-item">
+                                <span class="stat-label">Total:</span>
+                                <span class="stat-value" id="totalCount">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Showing:</span>
+                                <span class="stat-value" id="showingCount">0</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- TRL Level Filter -->
-                <div class="filter-section">
-                    <h3>TRL Level</h3>
-                    <div class="checkbox-group" id="trlFilterGroup">
-                        <label class="checkbox-label">
-                            <input type="checkbox" class="filter-checkbox" data-filter="trl" value="1">
-                            <span>TRL 1</span>
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" class="filter-checkbox" data-filter="trl" value="2">
-                            <span>TRL 2</span>
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" class="filter-checkbox" data-filter="trl" value="3">
-                            <span>TRL 3</span>
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" class="filter-checkbox" data-filter="trl" value="4">
-                            <span>TRL 4</span>
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" class="filter-checkbox" data-filter="trl" value="5">
-                            <span>TRL 5</span>
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" class="filter-checkbox" data-filter="trl" value="6">
-                            <span>TRL 6</span>
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" class="filter-checkbox" data-filter="trl" value="7">
-                            <span>TRL 7</span>
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" class="filter-checkbox" data-filter="trl" value="8">
-                            <span>TRL 8</span>
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" class="filter-checkbox" data-filter="trl" value="9">
-                            <span>TRL 9</span>
-                        </label>
+                <!-- Scrollable Filters Section -->
+                <div class="sidebar-filters">
+                    <!-- Segment Filter -->
+                    <div class="filter-section">
+                        <h3>Segment</h3>
+                        <div class="checkbox-group" id="segmentFilterGroup">
+                            <!-- Populated by JavaScript -->
+                        </div>
                     </div>
-                </div>
 
-                <!-- Funding Filter -->
-                <div class="filter-section">
-                    <h3>Funding Status</h3>
-                    <div class="checkbox-group" id="fundingFilterGroup">
-                        <label class="checkbox-label">
-                            <input type="checkbox" class="filter-checkbox" data-filter="funding" value="Yes">
-                            <span>Funded</span>
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" class="filter-checkbox" data-filter="funding" value="No">
-                            <span>Not Funded</span>
-                        </label>
+                    <!-- TRL Level Filter -->
+                    <div class="filter-section">
+                        <h3>TRL Level</h3>
+                        <div class="checkbox-group" id="trlFilterGroup">
+                            <label class="checkbox-label">
+                                <input type="checkbox" class="filter-checkbox" data-filter="trl" value="1">
+                                <span>TRL 1</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" class="filter-checkbox" data-filter="trl" value="2">
+                                <span>TRL 2</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" class="filter-checkbox" data-filter="trl" value="3">
+                                <span>TRL 3</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" class="filter-checkbox" data-filter="trl" value="4">
+                                <span>TRL 4</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" class="filter-checkbox" data-filter="trl" value="5">
+                                <span>TRL 5</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" class="filter-checkbox" data-filter="trl" value="6">
+                                <span>TRL 6</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" class="filter-checkbox" data-filter="trl" value="7">
+                                <span>TRL 7</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" class="filter-checkbox" data-filter="trl" value="8">
+                                <span>TRL 8</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" class="filter-checkbox" data-filter="trl" value="9">
+                                <span>TRL 9</span>
+                            </label>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Recognition Filter -->
-                <div class="filter-section">
-                    <h3>Recognition</h3>
-                    <div class="checkbox-group" id="recognitionFilterGroup">
-                        <label class="checkbox-label">
-                            <input type="checkbox" class="filter-checkbox" data-filter="recognition" value="Award Winners">
-                            <span>Award Winners</span>
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" class="filter-checkbox" data-filter="recognition" value="Media recognized">
-                            <span>Media Recognized</span>
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" class="filter-checkbox" data-filter="recognition" value="Others">
-                            <span>Others</span>
-                        </label>
+                    <!-- Funding Filter -->
+                    <div class="filter-section">
+                        <h3>Funding Status</h3>
+                        <div class="checkbox-group" id="fundingFilterGroup">
+                            <label class="checkbox-label">
+                                <input type="checkbox" class="filter-checkbox" data-filter="funding" value="Yes">
+                                <span>Funded</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" class="filter-checkbox" data-filter="funding" value="No">
+                                <span>Not Funded</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Recognition Filter -->
+                    <div class="filter-section">
+                        <h3>Recognition</h3>
+                        <div class="checkbox-group" id="recognitionFilterGroup">
+                            <label class="checkbox-label">
+                                <input type="checkbox" class="filter-checkbox" data-filter="recognition" value="Award Winners">
+                                <span>Award Winners</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" class="filter-checkbox" data-filter="recognition" value="Media recognized">
+                                <span>Media Recognized</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" class="filter-checkbox" data-filter="recognition" value="Others">
+                                <span>Others</span>
+                            </label>
+                        </div>
                     </div>
                 </div>
             </aside>

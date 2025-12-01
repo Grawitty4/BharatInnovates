@@ -113,7 +113,56 @@ body::before {
     position: sticky;
     top: 20px;
     max-height: calc(100vh - 40px);
+    overflow: hidden;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Fixed top section (header, search, stats) */
+.sidebar-top {
+    flex-shrink: 0;
+    padding-right: 10px; /* Space for potential scrollbar */
+}
+
+/* Scrollable filters section */
+.sidebar-filters {
+    flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 10px; /* Space for scrollbar */
+    margin-right: -10px; /* Offset padding to align with content */
+    padding-left: 0;
+    margin-left: 0;
+}
+
+/* Custom scrollbar styling for filters section */
+.sidebar-filters::-webkit-scrollbar {
+    width: 8px;
+}
+
+.sidebar-filters::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+    margin: 10px 0;
+}
+
+.sidebar-filters::-webkit-scrollbar-thumb {
+    background: rgba(102, 126, 234, 0.3);
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+.sidebar-filters::-webkit-scrollbar-thumb:hover {
+    background: rgba(102, 126, 234, 0.5);
+    background-clip: padding-box;
+}
+
+/* Firefox scrollbar */
+.sidebar-filters {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(102, 126, 234, 0.3) transparent;
 }
 
 .sidebar-header {
@@ -123,6 +172,8 @@ body::before {
     margin-bottom: 25px;
     padding-bottom: 15px;
     border-bottom: 2px solid #e0e0e0;
+    gap: 10px;
+    min-width: 0;
 }
 
 .sidebar-header h2 {
@@ -130,6 +181,9 @@ body::before {
     color: #333;
     margin: 0;
     font-weight: 600;
+    flex: 1;
+    min-width: 0;
+    word-wrap: break-word;
 }
 
 .clear-filters-btn {
@@ -141,6 +195,8 @@ body::before {
     font-size: 0.85em;
     cursor: pointer;
     transition: all 0.2s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .clear-filters-btn:hover {
@@ -151,6 +207,8 @@ body::before {
 
 .filter-section {
     margin-bottom: 25px;
+    min-width: 0;
+    overflow-x: hidden;
 }
 
 .filter-section h3 {
@@ -166,6 +224,7 @@ body::before {
 .search-box-sidebar {
     display: flex;
     gap: 8px;
+    min-width: 0;
 }
 
 .search-box-sidebar input {
@@ -176,6 +235,8 @@ body::before {
     font-size: 14px;
     transition: all 0.2s ease;
     background: white;
+    min-width: 0;
+    box-sizing: border-box;
 }
 
 .search-box-sidebar input:focus {
@@ -240,6 +301,15 @@ body::before {
     font-size: 0.9em;
     color: #333;
     transition: color 0.2s ease;
+    min-width: 0;
+    word-wrap: break-word;
+}
+
+.checkbox-label span {
+    flex: 1;
+    min-width: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .checkbox-label:hover {
