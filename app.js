@@ -231,79 +231,75 @@ function renderApplications() {
     
     // Render grid view
     grid.innerHTML = paginatedApps.map(app => `
-        <a href="#${app.ApplicationId}" class="application-card-link" onclick="event.preventDefault(); showDetail('${app.ApplicationId}'); return false;">
-            <div class="application-card">
-                <div class="app-id">${app.ApplicationId}</div>
-                <div class="app-title">${app['Innovation Title'] || 'No Title'}</div>
-                <div class="app-venture">${app['Venture Name'] || app['Startup/Company Popular (Brand) Name (if any)'] || 'N/A'}</div>
-                <div class="app-details">
-                    <div class="app-detail-item">
-                        <span class="app-detail-label">Applicant:</span>
-                        <span class="app-detail-value">${app.Name || 'N/A'}</span>
-                    </div>
-                    <div class="app-detail-item">
-                        <span class="app-detail-label">TRL Level:</span>
-                        <span class="app-detail-value">${app['Technology Readiness Level (TRL)'] || 'N/A'}</span>
-                    </div>
-                    <div class="app-detail-item">
-                        <span class="app-detail-label">Team Size:</span>
-                        <span class="app-detail-value">${app['Team Size (full-time equivalents)'] || 'N/A'}</span>
-                    </div>
-                    <div class="app-detail-item">
-                        <span class="app-detail-label">Funded:</span>
-                        <span class="app-detail-value">${app['Are you funded by any VC/Angel/Govt?'] || 'N/A'}</span>
-                    </div>
+        <div class="application-card">
+            <div class="app-id">${app.ApplicationId}</div>
+            <div class="app-title">${app['Innovation Title'] || 'No Title'}</div>
+            <div class="app-venture">${app['Venture Name'] || app['Startup/Company Popular (Brand) Name (if any)'] || 'N/A'}</div>
+            <div class="app-details">
+                <div class="app-detail-item">
+                    <span class="app-detail-label">Applicant:</span>
+                    <span class="app-detail-value">${app.Name || 'N/A'}</span>
                 </div>
-                <button class="view-btn" onclick="event.stopPropagation(); event.preventDefault(); showDetail('${app.ApplicationId}'); return false;">View Details</button>
+                <div class="app-detail-item">
+                    <span class="app-detail-label">TRL Level:</span>
+                    <span class="app-detail-value">${app['Technology Readiness Level (TRL)'] || 'N/A'}</span>
+                </div>
+                <div class="app-detail-item">
+                    <span class="app-detail-label">Team Size:</span>
+                    <span class="app-detail-value">${app['Team Size (full-time equivalents)'] || 'N/A'}</span>
+                </div>
+                <div class="app-detail-item">
+                    <span class="app-detail-label">Funded:</span>
+                    <span class="app-detail-value">${app['Are you funded by any VC/Angel/Govt?'] || 'N/A'}</span>
+                </div>
             </div>
-        </a>
+            <button class="view-btn" onclick="openApplicationInNewTab('${app.ApplicationId}')">View Details</button>
+        </div>
     `).join('');
     
     // Render list view
     if (list) {
         list.innerHTML = paginatedApps.map(app => `
-            <a href="#${app.ApplicationId}" class="application-list-item-link" onclick="event.preventDefault(); showDetail('${app.ApplicationId}'); return false;">
-                <div class="application-list-item">
-                    <div class="list-item-id">${app.ApplicationId}</div>
-                    <div class="list-item-content">
-                        <h3 class="list-item-title">${app['Innovation Title'] || 'No Title'}</h3>
-                        <div class="list-item-venture">${app['Venture Name'] || app['Startup/Company Popular (Brand) Name (if any)'] || 'N/A'}</div>
-                        <div class="list-item-details">
-                            <div class="list-item-detail">
-                                <span class="list-item-detail-label">Applicant:</span>
-                                <span class="list-item-detail-value">${app.Name || 'N/A'}</span>
-                            </div>
-                            <div class="list-item-detail">
-                                <span class="list-item-detail-label">TRL:</span>
-                                <span class="list-item-detail-value">${app['Technology Readiness Level (TRL)'] || 'N/A'}</span>
-                            </div>
-                            <div class="list-item-detail">
-                                <span class="list-item-detail-label">Team Size:</span>
-                                <span class="list-item-detail-value">${app['Team Size (full-time equivalents)'] || 'N/A'}</span>
-                            </div>
-                            <div class="list-item-detail">
-                                <span class="list-item-detail-label">Funded:</span>
-                                <span class="list-item-detail-value">${app['Are you funded by any VC/Angel/Govt?'] || 'N/A'}</span>
-                            </div>
-                            ${app.awards && app.awards.length > 0 ? `
-                            <div class="list-item-detail">
-                                <span class="list-item-detail-label">Awards:</span>
-                                <span class="list-item-detail-value">${app.awards.length}</span>
-                            </div>
-                            ` : ''}
-                            ${app.media_coverage && app.media_coverage.length > 0 ? `
-                            <div class="list-item-detail">
-                                <span class="list-item-detail-label">Media:</span>
-                                <span class="list-item-detail-value">${app.media_coverage.length}</span>
-                            </div>
-                            ` : ''}
+            <div class="application-list-item">
+                <div class="list-item-id">${app.ApplicationId}</div>
+                <div class="list-item-content">
+                    <h3 class="list-item-title">${app['Innovation Title'] || 'No Title'}</h3>
+                    <div class="list-item-venture">${app['Venture Name'] || app['Startup/Company Popular (Brand) Name (if any)'] || 'N/A'}</div>
+                    <div class="list-item-details">
+                        <div class="list-item-detail">
+                            <span class="list-item-detail-label">Applicant:</span>
+                            <span class="list-item-detail-value">${app.Name || 'N/A'}</span>
                         </div>
-                    </div>
-                    <div class="list-item-actions">
-                        <button class="list-view-btn" onclick="event.stopPropagation(); event.preventDefault(); showDetail('${app.ApplicationId}'); return false;">View Details</button>
+                        <div class="list-item-detail">
+                            <span class="list-item-detail-label">TRL:</span>
+                            <span class="list-item-detail-value">${app['Technology Readiness Level (TRL)'] || 'N/A'}</span>
+                        </div>
+                        <div class="list-item-detail">
+                            <span class="list-item-detail-label">Team Size:</span>
+                            <span class="list-item-detail-value">${app['Team Size (full-time equivalents)'] || 'N/A'}</span>
+                        </div>
+                        <div class="list-item-detail">
+                            <span class="list-item-detail-label">Funded:</span>
+                            <span class="list-item-detail-value">${app['Are you funded by any VC/Angel/Govt?'] || 'N/A'}</span>
+                        </div>
+                        ${app.awards && app.awards.length > 0 ? `
+                        <div class="list-item-detail">
+                            <span class="list-item-detail-label">Awards:</span>
+                            <span class="list-item-detail-value">${app.awards.length}</span>
+                        </div>
+                        ` : ''}
+                        ${app.media_coverage && app.media_coverage.length > 0 ? `
+                        <div class="list-item-detail">
+                            <span class="list-item-detail-label">Media:</span>
+                            <span class="list-item-detail-value">${app.media_coverage.length}</span>
+                        </div>
+                        ` : ''}
                     </div>
                 </div>
-            </a>
+                <div class="list-item-actions">
+                    <button class="list-view-btn" onclick="openApplicationInNewTab('${app.ApplicationId}')">View Details</button>
+                </div>
+            </div>
         `).join('');
     }
     
@@ -439,7 +435,15 @@ function goToPage(page) {
     document.getElementById('applicationsGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// Show application detail in new view
+// Open application detail in new tab/window
+function openApplicationInNewTab(applicationId) {
+    // Open in new tab with hash
+    const currentUrl = window.location.origin + window.location.pathname;
+    const newUrl = currentUrl + '#' + applicationId;
+    window.open(newUrl, '_blank');
+}
+
+// Show application detail in new view (called when hash is present)
 function showDetail(applicationId) {
     // Update URL hash to enable direct linking and browser back/forward
     window.location.hash = applicationId;
