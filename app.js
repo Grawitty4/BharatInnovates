@@ -18,6 +18,8 @@ async function loadApplications() {
         updateStats();
         // Initialize view mode after data loads
         updateViewMode();
+        // Check if there's a hash in the URL to show detail view
+        checkInitialHash();
     } catch (error) {
         console.error('Error loading applications:', error);
         document.getElementById('applicationsGrid').innerHTML = 
@@ -25,9 +27,9 @@ async function loadApplications() {
     }
 }
 
-// Populate filter dropdowns
+// Populate filter checkboxes
 function populateFilters() {
-    const segmentFilter = document.getElementById('segmentFilter');
+    const segmentFilterGroup = document.getElementById('segmentFilterGroup');
     const segments = new Set();
     
     applications.forEach(app => {
@@ -38,11 +40,30 @@ function populateFilters() {
     // Sort segments alphabetically
     const sortedSegments = Array.from(segments).sort();
     
+    // Clear existing checkboxes
+    segmentFilterGroup.innerHTML = '';
+    
     sortedSegments.forEach(segment => {
-        const option = document.createElement('option');
-        option.value = segment;
-        option.textContent = segment;
-        segmentFilter.appendChild(option);
+        const label = document.createElement('label');
+        label.className = 'checkbox-label';
+        
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'filter-checkbox';
+        checkbox.setAttribute('data-filter', 'segment');
+        checkbox.value = segment;
+        
+        const span = document.createElement('span');
+        span.textContent = segment;
+        
+        label.appendChild(checkbox);
+        label.appendChild(span);
+        segmentFilterGroup.appendChild(label);
+    });
+    
+    // Add event listeners to all checkboxes
+    document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', filterApplications);
     });
 }
 
@@ -68,8 +89,25 @@ function sortApplications() {
     switch(sortBy) {
         case 'most-funded':
             appsToSort.sort((a, b) => {
-                const aFunding = a['Total Funding Raised'] || 0;
-                const bFunding = b['Total Funding Raised'] || 0;
+                // Convert to number, handling strings with commas or other formatting
+                const parseFunding = (value) => {
+                    if (value === null || value === undefined || value === '') return 0;
+                    if (typeof value === 'number') {
+                        return isNaN(value) ? 0 : value;
+                    }
+                    if (typeof value === 'string') {
+                        // Remove commas, spaces, and other non-numeric characters except decimal point and minus
+                        const cleaned = value.toString().replace(/[^\d.-]/g, '');
+                        const parsed = parseFloat(cleaned);
+                        return isNaN(parsed) ? 0 : parsed;
+                    }
+                    return 0;
+                };
+                
+                const aFunding = parseFunding(a['Total Funding Raised']);
+                const bFunding = parseFunding(b['Total Funding Raised']);
+                
+                // Descending order (highest first)
                 return bFunding - aFunding;
             });
             break;
@@ -119,10 +157,12 @@ function sortApplications() {
 // Helper function to get filtered applications (before sorting)
 function getFilteredApplications() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-    const segmentFilter = document.getElementById('segmentFilter').value;
-    const trlFilter = document.getElementById('trlFilter').value;
-    const fundingFilter = document.getElementById('fundingFilter').value;
-    const recognitionFilter = document.getElementById('recognitionFilter').value;
+    
+    // Get selected checkboxes
+    const selectedSegments = Array.from(document.querySelectorAll('.filter-checkbox[data-filter="segment"]:checked')).map(cb => cb.value);
+    const selectedTRLs = Array.from(document.querySelectorAll('.filter-checkbox[data-filter="trl"]:checked')).map(cb => cb.value);
+    const selectedFunding = Array.from(document.querySelectorAll('.filter-checkbox[data-filter="funding"]:checked')).map(cb => cb.value);
+    const selectedRecognition = Array.from(document.querySelectorAll('.filter-checkbox[data-filter="recognition"]:checked')).map(cb => cb.value);
     
     return applications.filter(app => {
         const matchesSearch = !searchTerm || 
@@ -131,19 +171,22 @@ function getFilteredApplications() {
             app['Venture Name']?.toLowerCase().includes(searchTerm) ||
             app['Innovation Title']?.toLowerCase().includes(searchTerm);
         
-        const matchesSegment = !segmentFilter || 
+        // Segment filter: if no segments selected, show all; otherwise match if app segment is in selected list
+        const matchesSegment = selectedSegments.length === 0 || 
             (app['Select the primary segment for your innovation: (Select only one)'] && 
-             app['Select the primary segment for your innovation: (Select only one)'].trim() === segmentFilter);
+             selectedSegments.includes(app['Select the primary segment for your innovation: (Select only one)'].trim()));
         
-        const matchesTRL = !trlFilter || 
-            app['Technology Readiness Level (TRL)'] === trlFilter;
+        // TRL filter: if no TRLs selected, show all; otherwise match if app TRL is in selected list
+        const matchesTRL = selectedTRLs.length === 0 || 
+            selectedTRLs.includes(String(app['Technology Readiness Level (TRL)']));
         
-        const matchesFunding = !fundingFilter || 
-            app['Are you funded by any VC/Angel/Govt?'] === fundingFilter;
+        // Funding filter: if no funding statuses selected, show all; otherwise match if app funding status is in selected list
+        const matchesFunding = selectedFunding.length === 0 || 
+            selectedFunding.includes(app['Are you funded by any VC/Angel/Govt?']);
         
         // Recognition filter logic
         let matchesRecognition = true;
-        if (recognitionFilter) {
+        if (selectedRecognition.length > 0) {
             const hasAwards = app.awards && app.awards.length > 0 && 
                             app.awards.some(award => {
                                 return award['Award/Recognition'] || award['Awarding Body'] || award['Details'];
@@ -154,13 +197,13 @@ function getFilteredApplications() {
                                 return media['Type'] || media['Website links'] || media['Details'];
                            });
             
-            if (recognitionFilter === 'Award Winners') {
-                matchesRecognition = hasAwards;
-            } else if (recognitionFilter === 'Media recognized') {
-                matchesRecognition = hasMedia;
-            } else if (recognitionFilter === 'Others') {
-                matchesRecognition = !hasAwards && !hasMedia;
-            }
+            // Check if any selected recognition type matches
+            matchesRecognition = selectedRecognition.some(rec => {
+                if (rec === 'Award Winners') return hasAwards;
+                if (rec === 'Media recognized') return hasMedia;
+                if (rec === 'Others') return !hasAwards && !hasMedia;
+                return false;
+            });
         }
         
         return matchesSearch && matchesSegment && matchesTRL && matchesFunding && matchesRecognition;
@@ -188,75 +231,79 @@ function renderApplications() {
     
     // Render grid view
     grid.innerHTML = paginatedApps.map(app => `
-        <div class="application-card" onclick="showDetail('${app.ApplicationId}')">
-            <div class="app-id">${app.ApplicationId}</div>
-            <div class="app-title">${app['Innovation Title'] || 'No Title'}</div>
-            <div class="app-venture">${app['Venture Name'] || app['Startup/Company Popular (Brand) Name (if any)'] || 'N/A'}</div>
-            <div class="app-details">
-                <div class="app-detail-item">
-                    <span class="app-detail-label">Applicant:</span>
-                    <span class="app-detail-value">${app.Name || 'N/A'}</span>
+        <a href="#${app.ApplicationId}" class="application-card-link" onclick="event.preventDefault(); showDetail('${app.ApplicationId}'); return false;">
+            <div class="application-card">
+                <div class="app-id">${app.ApplicationId}</div>
+                <div class="app-title">${app['Innovation Title'] || 'No Title'}</div>
+                <div class="app-venture">${app['Venture Name'] || app['Startup/Company Popular (Brand) Name (if any)'] || 'N/A'}</div>
+                <div class="app-details">
+                    <div class="app-detail-item">
+                        <span class="app-detail-label">Applicant:</span>
+                        <span class="app-detail-value">${app.Name || 'N/A'}</span>
+                    </div>
+                    <div class="app-detail-item">
+                        <span class="app-detail-label">TRL Level:</span>
+                        <span class="app-detail-value">${app['Technology Readiness Level (TRL)'] || 'N/A'}</span>
+                    </div>
+                    <div class="app-detail-item">
+                        <span class="app-detail-label">Team Size:</span>
+                        <span class="app-detail-value">${app['Team Size (full-time equivalents)'] || 'N/A'}</span>
+                    </div>
+                    <div class="app-detail-item">
+                        <span class="app-detail-label">Funded:</span>
+                        <span class="app-detail-value">${app['Are you funded by any VC/Angel/Govt?'] || 'N/A'}</span>
+                    </div>
                 </div>
-                <div class="app-detail-item">
-                    <span class="app-detail-label">TRL Level:</span>
-                    <span class="app-detail-value">${app['Technology Readiness Level (TRL)'] || 'N/A'}</span>
-                </div>
-                <div class="app-detail-item">
-                    <span class="app-detail-label">Team Size:</span>
-                    <span class="app-detail-value">${app['Team Size (full-time equivalents)'] || 'N/A'}</span>
-                </div>
-                <div class="app-detail-item">
-                    <span class="app-detail-label">Funded:</span>
-                    <span class="app-detail-value">${app['Are you funded by any VC/Angel/Govt?'] || 'N/A'}</span>
-                </div>
+                <button class="view-btn" onclick="event.stopPropagation(); event.preventDefault(); showDetail('${app.ApplicationId}'); return false;">View Details</button>
             </div>
-            <button class="view-btn" onclick="event.stopPropagation(); showDetail('${app.ApplicationId}')">View Details</button>
-        </div>
+        </a>
     `).join('');
     
     // Render list view
     if (list) {
         list.innerHTML = paginatedApps.map(app => `
-            <div class="application-list-item" onclick="showDetail('${app.ApplicationId}')">
-                <div class="list-item-id">${app.ApplicationId}</div>
-                <div class="list-item-content">
-                    <h3 class="list-item-title">${app['Innovation Title'] || 'No Title'}</h3>
-                    <div class="list-item-venture">${app['Venture Name'] || app['Startup/Company Popular (Brand) Name (if any)'] || 'N/A'}</div>
-                    <div class="list-item-details">
-                        <div class="list-item-detail">
-                            <span class="list-item-detail-label">Applicant:</span>
-                            <span class="list-item-detail-value">${app.Name || 'N/A'}</span>
+            <a href="#${app.ApplicationId}" class="application-list-item-link" onclick="event.preventDefault(); showDetail('${app.ApplicationId}'); return false;">
+                <div class="application-list-item">
+                    <div class="list-item-id">${app.ApplicationId}</div>
+                    <div class="list-item-content">
+                        <h3 class="list-item-title">${app['Innovation Title'] || 'No Title'}</h3>
+                        <div class="list-item-venture">${app['Venture Name'] || app['Startup/Company Popular (Brand) Name (if any)'] || 'N/A'}</div>
+                        <div class="list-item-details">
+                            <div class="list-item-detail">
+                                <span class="list-item-detail-label">Applicant:</span>
+                                <span class="list-item-detail-value">${app.Name || 'N/A'}</span>
+                            </div>
+                            <div class="list-item-detail">
+                                <span class="list-item-detail-label">TRL:</span>
+                                <span class="list-item-detail-value">${app['Technology Readiness Level (TRL)'] || 'N/A'}</span>
+                            </div>
+                            <div class="list-item-detail">
+                                <span class="list-item-detail-label">Team Size:</span>
+                                <span class="list-item-detail-value">${app['Team Size (full-time equivalents)'] || 'N/A'}</span>
+                            </div>
+                            <div class="list-item-detail">
+                                <span class="list-item-detail-label">Funded:</span>
+                                <span class="list-item-detail-value">${app['Are you funded by any VC/Angel/Govt?'] || 'N/A'}</span>
+                            </div>
+                            ${app.awards && app.awards.length > 0 ? `
+                            <div class="list-item-detail">
+                                <span class="list-item-detail-label">Awards:</span>
+                                <span class="list-item-detail-value">${app.awards.length}</span>
+                            </div>
+                            ` : ''}
+                            ${app.media_coverage && app.media_coverage.length > 0 ? `
+                            <div class="list-item-detail">
+                                <span class="list-item-detail-label">Media:</span>
+                                <span class="list-item-detail-value">${app.media_coverage.length}</span>
+                            </div>
+                            ` : ''}
                         </div>
-                        <div class="list-item-detail">
-                            <span class="list-item-detail-label">TRL:</span>
-                            <span class="list-item-detail-value">${app['Technology Readiness Level (TRL)'] || 'N/A'}</span>
-                        </div>
-                        <div class="list-item-detail">
-                            <span class="list-item-detail-label">Team Size:</span>
-                            <span class="list-item-detail-value">${app['Team Size (full-time equivalents)'] || 'N/A'}</span>
-                        </div>
-                        <div class="list-item-detail">
-                            <span class="list-item-detail-label">Funded:</span>
-                            <span class="list-item-detail-value">${app['Are you funded by any VC/Angel/Govt?'] || 'N/A'}</span>
-                        </div>
-                        ${app.awards && app.awards.length > 0 ? `
-                        <div class="list-item-detail">
-                            <span class="list-item-detail-label">Awards:</span>
-                            <span class="list-item-detail-value">${app.awards.length}</span>
-                        </div>
-                        ` : ''}
-                        ${app.media_coverage && app.media_coverage.length > 0 ? `
-                        <div class="list-item-detail">
-                            <span class="list-item-detail-label">Media:</span>
-                            <span class="list-item-detail-value">${app.media_coverage.length}</span>
-                        </div>
-                        ` : ''}
+                    </div>
+                    <div class="list-item-actions">
+                        <button class="list-view-btn" onclick="event.stopPropagation(); event.preventDefault(); showDetail('${app.ApplicationId}'); return false;">View Details</button>
                     </div>
                 </div>
-                <div class="list-item-actions">
-                    <button class="list-view-btn" onclick="event.stopPropagation(); showDetail('${app.ApplicationId}')">View Details</button>
-                </div>
-            </div>
+            </a>
         `).join('');
     }
     
@@ -296,59 +343,11 @@ function updateViewMode() {
 
 // Search and filter
 function filterApplications() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-    const segmentFilter = document.getElementById('segmentFilter').value;
-    const trlFilter = document.getElementById('trlFilter').value;
-    const fundingFilter = document.getElementById('fundingFilter').value;
-    const recognitionFilter = document.getElementById('recognitionFilter').value;
-    
     // Reset to first page when filtering
     currentPage = 1;
     
-    filteredApplications = applications.filter(app => {
-        const matchesSearch = !searchTerm || 
-            app.ApplicationId?.toLowerCase().includes(searchTerm) ||
-            app.Name?.toLowerCase().includes(searchTerm) ||
-            app['Venture Name']?.toLowerCase().includes(searchTerm) ||
-            app['Innovation Title']?.toLowerCase().includes(searchTerm);
-        
-        const matchesSegment = !segmentFilter || 
-            (app['Select the primary segment for your innovation: (Select only one)'] && 
-             app['Select the primary segment for your innovation: (Select only one)'].trim() === segmentFilter);
-        
-        const matchesTRL = !trlFilter || 
-            app['Technology Readiness Level (TRL)'] === trlFilter;
-        
-        const matchesFunding = !fundingFilter || 
-            app['Are you funded by any VC/Angel/Govt?'] === fundingFilter;
-        
-        // Recognition filter logic
-        let matchesRecognition = true;
-        if (recognitionFilter) {
-            const hasAwards = app.awards && app.awards.length > 0 && 
-                            app.awards.some(award => {
-                                // Check if award has valid data (not all empty)
-                                return award['Award/Recognition'] || award['Awarding Body'] || award['Details'];
-                            });
-            
-            const hasMedia = app.media_coverage && app.media_coverage.length > 0 && 
-                           app.media_coverage.some(media => {
-                                // Check if media has valid data (not all empty)
-                                return media['Type'] || media['Website links'] || media['Details'];
-                           });
-            
-            if (recognitionFilter === 'Award Winners') {
-                matchesRecognition = hasAwards;
-            } else if (recognitionFilter === 'Media recognized') {
-                matchesRecognition = hasMedia;
-            } else if (recognitionFilter === 'Others') {
-                // Others = no awards AND no media
-                matchesRecognition = !hasAwards && !hasMedia;
-            }
-        }
-        
-        return matchesSearch && matchesSegment && matchesTRL && matchesFunding && matchesRecognition;
-    });
+    // Use the shared getFilteredApplications function
+    filteredApplications = getFilteredApplications();
     
     // Apply sorting if active, otherwise just render
     if (currentSort) {
@@ -440,22 +439,39 @@ function goToPage(page) {
     document.getElementById('applicationsGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// Show application detail
+// Show application detail in new view
 function showDetail(applicationId) {
+    // Update URL hash to enable direct linking and browser back/forward
+    window.location.hash = applicationId;
+    renderDetailView(applicationId);
+}
+
+// Render detail view
+function renderDetailView(applicationId) {
     const app = applications.find(a => a.ApplicationId === applicationId);
-    if (!app) return;
-    
-    const modal = document.getElementById('detailModal');
-    const modalBody = document.getElementById('modalBody');
-    
-    // Reset scroll position to top before showing modal
-    const modalContent = document.querySelector('.modal-content');
-    if (modalContent) {
-        modalContent.scrollTop = 0;
+    if (!app) {
+        // Application not found, go back to list
+        goBack();
+        return;
     }
     
-    modalBody.innerHTML = `
-        <div class="modal-section">
+    const detailView = document.getElementById('detailView');
+    const detailBody = document.getElementById('detailBody');
+    
+    // Hide main content (header, sidebar, main layout) and show detail view
+    const header = document.querySelector('.header');
+    const mainLayout = document.querySelector('.main-layout');
+    
+    if (header) header.style.display = 'none';
+    if (mainLayout) mainLayout.style.display = 'none';
+    
+    detailView.classList.remove('hidden');
+    
+    // Reset scroll position
+    window.scrollTo(0, 0);
+    
+    detailBody.innerHTML = `
+        <div class="detail-section">
             <h2>${app['Innovation Title'] || 'Application Details'}</h2>
             <div class="detail-grid">
                 <div class="detail-item">
@@ -486,7 +502,7 @@ function showDetail(applicationId) {
             </div>
         </div>
 
-        <div class="modal-section">
+        <div class="detail-section">
             <h3>Company Information</h3>
             <div class="detail-grid">
                 <div class="detail-item">
@@ -512,7 +528,7 @@ function showDetail(applicationId) {
             </div>
         </div>
 
-        <div class="modal-section">
+        <div class="detail-section">
             <h3>Innovation Details</h3>
             <div class="detail-grid">
                 <div class="detail-item">
@@ -562,7 +578,7 @@ function showDetail(applicationId) {
             </div>
         </div>
 
-        <div class="modal-section">
+        <div class="detail-section">
             <h3>Funding Information</h3>
             <div class="detail-grid">
                 <div class="detail-item">
@@ -593,7 +609,7 @@ function showDetail(applicationId) {
         </div>
 
         ${app.team_members && app.team_members.length > 0 ? `
-        <div class="modal-section">
+        <div class="detail-section">
             <h3>Team Members (${app.team_members.length})</h3>
             <div class="team-grid">
                 ${app.team_members.map(member => `
@@ -629,7 +645,7 @@ function showDetail(applicationId) {
         ` : ''}
 
         ${app.awards && app.awards.length > 0 ? `
-        <div class="modal-section">
+        <div class="detail-section">
             <h3>Awards & Recognition (${app.awards.length})</h3>
             <div class="award-grid">
                 ${app.awards.map(award => `
@@ -657,7 +673,7 @@ function showDetail(applicationId) {
         ` : ''}
 
         ${app.media_coverage && app.media_coverage.length > 0 ? `
-        <div class="modal-section">
+        <div class="detail-section">
             <h3>Media Coverage & Publications (${app.media_coverage.length})</h3>
             <div class="media-grid">
                 ${app.media_coverage.map(media => `
@@ -685,9 +701,10 @@ function showDetail(applicationId) {
         </div>
         ` : ''}
 
-        <div class="modal-section">
+        <div class="detail-section">
             <h3>Documents & Links</h3>
-            <div class="detail-grid">
+            ${checkDocumentsAccess() ? `
+            <div class="detail-grid" id="documentsContent">
                 ${app['Innovation/Product Demo Video'] ? `
                 <div class="detail-item">
                     <span class="detail-label">Demo Video</span>
@@ -737,6 +754,68 @@ function showDetail(applicationId) {
                 </div>
                 ` : ''}
             </div>
+            ` : `
+            <div class="password-lock-screen" id="documentsLockScreen">
+                <div class="lock-icon">🔒</div>
+                <h4>Confidential Information</h4>
+                <p>Please enter credentials to access</p>
+                <div class="password-input-group">
+                    <input type="password" id="documentsPassword" placeholder="Enter password" class="password-input">
+                    <button onclick="unlockDocuments('${app.ApplicationId}')" class="unlock-btn">Unlock</button>
+                </div>
+                <div id="passwordError" class="password-error" style="display: none;">Incorrect password. Please try again.</div>
+            </div>
+            <div class="detail-grid" id="documentsContent" style="display: none;">
+                ${app['Innovation/Product Demo Video'] ? `
+                <div class="detail-item">
+                    <span class="detail-label">Demo Video</span>
+                    <span class="detail-value"><a href="${app['Innovation/Product Demo Video']}" target="_blank">View Video</a></span>
+                </div>
+                ` : ''}
+                ${app['Link to high resolution video file'] ? `
+                <div class="detail-item">
+                    <span class="detail-label">High Res Video</span>
+                    <span class="detail-value"><a href="${app['Link to high resolution video file']}" target="_blank">View Video</a></span>
+                </div>
+                ` : ''}
+                ${app['Presentation Deck (Max 15 slides)'] ? `
+                <div class="detail-item">
+                    <span class="detail-label">Presentation Deck</span>
+                    <span class="detail-value"><a href="${app['Presentation Deck (Max 15 slides)']}" target="_blank">View Deck</a></span>
+                </div>
+                ` : ''}
+                ${app['Patent Documentation'] ? `
+                <div class="detail-item">
+                    <span class="detail-label">Patent Documentation</span>
+                    <span class="detail-value"><a href="${app['Patent Documentation']}" target="_blank">View Document</a></span>
+                </div>
+                ` : ''}
+                ${app['Publications'] ? `
+                <div class="detail-item">
+                    <span class="detail-label">Publications</span>
+                    <span class="detail-value"><a href="${app['Publications']}" target="_blank">View Publications</a></span>
+                </div>
+                ` : ''}
+                ${app['Team CVs (One single PDF)'] ? `
+                <div class="detail-item">
+                    <span class="detail-label">Team CVs</span>
+                    <span class="detail-value"><a href="${app['Team CVs (One single PDF)']}" target="_blank">View CVs</a></span>
+                </div>
+                ` : ''}
+                ${app['Company Registration Certificate (for startups)'] ? `
+                <div class="detail-item">
+                    <span class="detail-label">Registration Certificate</span>
+                    <span class="detail-value"><a href="${app['Company Registration Certificate (for startups)']}" target="_blank">View Certificate</a></span>
+                </div>
+                ` : ''}
+                ${app['Equity holding pattern (Upload cap table showing Indian founders hold >51%).'] ? `
+                <div class="detail-item">
+                    <span class="detail-label">Equity Holding Pattern</span>
+                    <span class="detail-value"><a href="${app['Equity holding pattern (Upload cap table showing Indian founders hold >51%).']}" target="_blank">View Document</a></span>
+                </div>
+                ` : ''}
+            </div>
+            `}
         </div>
 
         <div class="modal-section comments-section">
@@ -751,19 +830,47 @@ function showDetail(applicationId) {
         </div>
     `;
     
-    modal.style.display = 'block';
-    
-    // Prevent body scroll when modal is open
-    document.body.classList.add('modal-open');
-    
-    // Ensure modal content scrolls to top after content is rendered
-    setTimeout(() => {
-        const modalContent = document.querySelector('.modal-content');
-        if (modalContent) {
-            modalContent.scrollTop = 0;
-        }
-    }, 10);
+    // Detail view is now shown via renderDetailView
 }
+
+// Check if documents access is granted (per-application, not session-wide)
+function checkDocumentsAccess() {
+    // Always return false - password must be entered for each application
+    return false;
+}
+
+// Unlock documents section
+function unlockDocuments(applicationId) {
+    const passwordInput = document.getElementById('documentsPassword');
+    const password = passwordInput.value;
+    const errorDiv = document.getElementById('passwordError');
+    const lockScreen = document.getElementById('documentsLockScreen');
+    const contentDiv = document.getElementById('documentsContent');
+    
+    // Check password
+    if (password === 'BI@2025') {
+        // Correct password - unlock for this application only
+        lockScreen.style.display = 'none';
+        contentDiv.style.display = '';
+        passwordInput.value = '';
+        errorDiv.style.display = 'none';
+    } else {
+        // Incorrect password
+        errorDiv.style.display = 'block';
+        passwordInput.value = '';
+        passwordInput.focus();
+    }
+}
+
+// Allow Enter key to submit password
+document.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter' && e.target.id === 'documentsPassword') {
+        const applicationId = window.location.hash.substring(1);
+        if (applicationId) {
+            unlockDocuments(applicationId);
+        }
+    }
+});
 
 // Add comment
 function addComment(applicationId) {
@@ -811,30 +918,45 @@ function renderComments(applicationId) {
     `).join('');
 }
 
-// Close modal
-document.querySelector('.close').onclick = function() {
-    const modal = document.getElementById('detailModal');
-    const modalContent = document.querySelector('.modal-content');
-    modal.style.display = 'none';
-    // Re-enable body scroll when modal is closed
-    document.body.classList.remove('modal-open');
-    // Reset scroll position when closing
-    if (modalContent) {
-        modalContent.scrollTop = 0;
-    }
+// Go back to applications list
+function goBack() {
+    // Remove hash from URL
+    window.location.hash = '';
+    
+    // Show main content and hide detail view
+    const detailView = document.getElementById('detailView');
+    detailView.classList.add('hidden');
+    
+    // Show header and main layout
+    const header = document.querySelector('.header');
+    const mainLayout = document.querySelector('.main-layout');
+    
+    if (header) header.style.display = '';
+    if (mainLayout) mainLayout.style.display = '';
+    
+    // Scroll to top
+    window.scrollTo(0, 0);
 }
 
-window.onclick = function(event) {
-    const modal = document.getElementById('detailModal');
-    if (event.target == modal) {
-        const modalContent = document.querySelector('.modal-content');
-        modal.style.display = 'none';
-        // Re-enable body scroll when modal is closed
-        document.body.classList.remove('modal-open');
-        // Reset scroll position when closing
-        if (modalContent) {
-            modalContent.scrollTop = 0;
-        }
+// Handle hash changes (browser back/forward, direct links)
+window.addEventListener('hashchange', function() {
+    const hash = window.location.hash.substring(1); // Remove #
+    if (hash) {
+        renderDetailView(hash);
+    } else {
+        goBack();
+    }
+});
+
+// Check if there's a hash on page load (after data is loaded)
+// This will be called after loadApplications completes
+function checkInitialHash() {
+    const hash = window.location.hash.substring(1);
+    if (hash) {
+        // Small delay to ensure DOM is ready
+        setTimeout(() => {
+            renderDetailView(hash);
+        }, 100);
     }
 }
 
@@ -844,20 +966,21 @@ document.getElementById('searchInput').addEventListener('keypress', function(e) 
     if (e.key === 'Enter') filterApplications();
 });
 document.getElementById('searchBtn').addEventListener('click', filterApplications);
-document.getElementById('clearBtn').addEventListener('click', function() {
+document.getElementById('clearFiltersBtn').addEventListener('click', function() {
+    // Clear search
     document.getElementById('searchInput').value = '';
-    document.getElementById('segmentFilter').value = '';
-    document.getElementById('trlFilter').value = '';
-    document.getElementById('fundingFilter').value = '';
-    document.getElementById('recognitionFilter').value = '';
+    
+    // Uncheck all filter checkboxes
+    document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    
+    // Clear sort
     document.getElementById('sortBy').value = '';
     currentSort = '';
+    
     filterApplications();
 });
-document.getElementById('segmentFilter').addEventListener('change', filterApplications);
-document.getElementById('trlFilter').addEventListener('change', filterApplications);
-document.getElementById('fundingFilter').addEventListener('change', filterApplications);
-document.getElementById('recognitionFilter').addEventListener('change', filterApplications);
 document.getElementById('sortBy').addEventListener('change', sortApplications);
 
 // Load applications on page load

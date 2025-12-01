@@ -18,93 +18,186 @@
             <h1>Application Review Portal</h1>
         </header>
 
-        <!-- Search and Filter Bar -->
-        <div class="search-filter-bar">
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Search by Application ID, Name, Venture Name, or Innovation Title...">
-                <button id="searchBtn">🔍 Search</button>
-                <button id="clearBtn">Clear</button>
-                <!-- View Toggle - moved to right side -->
-                <div class="view-toggle">
-                    <button class="view-btn-toggle active" id="gridViewBtn" onclick="setViewMode('grid')" title="Grid View">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                            <rect x="2" y="2" width="6" height="6" rx="1"/>
-                            <rect x="12" y="2" width="6" height="6" rx="1"/>
-                            <rect x="2" y="12" width="6" height="6" rx="1"/>
-                            <rect x="12" y="12" width="6" height="6" rx="1"/>
-                        </svg>
-                    </button>
-                    <button class="view-btn-toggle" id="listViewBtn" onclick="setViewMode('list')" title="List View">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                            <rect x="2" y="3" width="16" height="2" rx="1"/>
-                            <rect x="2" y="9" width="16" height="2" rx="1"/>
-                            <rect x="2" y="15" width="16" height="2" rx="1"/>
-                        </svg>
-                    </button>
+        <!-- Main Content Layout -->
+        <div class="main-layout">
+            <!-- Left Sidebar - Filters -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h2>Filters</h2>
+                    <button id="clearFiltersBtn" class="clear-filters-btn">Clear All</button>
                 </div>
-            </div>
-            <div class="filter-box">
-                <!-- Stats moved to left most -->
-                <div class="stats-bar">
-                    <span class="stat-compact">Total: <strong id="totalCount">0</strong></span>
-                    <span class="stat-compact">Showing: <strong id="showingCount">0</strong></span>
+                
+                <!-- Search -->
+                <div class="filter-section">
+                    <h3>Search</h3>
+                    <div class="search-box-sidebar">
+                        <input type="text" id="searchInput" placeholder="Search applications...">
+                        <button id="searchBtn">🔍</button>
+                    </div>
                 </div>
-                <select id="segmentFilter">
-                    <option value="">All Segments</option>
-                </select>
-                <select id="trlFilter">
-                    <option value="">All TRL Levels</option>
-                    <option value="1">TRL 1</option>
-                    <option value="2">TRL 2</option>
-                    <option value="3">TRL 3</option>
-                    <option value="4">TRL 4</option>
-                    <option value="5">TRL 5</option>
-                    <option value="6">TRL 6</option>
-                    <option value="7">TRL 7</option>
-                    <option value="8">TRL 8</option>
-                    <option value="9">TRL 9</option>
-                </select>
-                <select id="fundingFilter">
-                    <option value="">All Funding Status</option>
-                    <option value="Yes">Funded</option>
-                    <option value="No">Not Funded</option>
-                </select>
-                <select id="recognitionFilter">
-                    <option value="">All Recognition</option>
-                    <option value="Award Winners">Award Winners</option>
-                    <option value="Media recognized">Media recognized</option>
-                    <option value="Others">Others</option>
-                </select>
-                <select id="sortBy">
-                    <option value="">Sort By</option>
-                    <option value="most-funded">Most Funded</option>
-                    <option value="largest-team">Largest Team</option>
-                    <option value="alphabetical">Alphabetical (A-Z)</option>
-                    <option value="trl-highest">TRL Level (Highest)</option>
-                    <option value="most-awarded">Most Awarded</option>
-                    <option value="most-recognized">Most Recognized</option>
-                </select>
+
+                <!-- Stats -->
+                <div class="filter-section">
+                    <div class="stats-sidebar">
+                        <div class="stat-item">
+                            <span class="stat-label">Total:</span>
+                            <span class="stat-value" id="totalCount">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Showing:</span>
+                            <span class="stat-value" id="showingCount">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Segment Filter -->
+                <div class="filter-section">
+                    <h3>Segment</h3>
+                    <div class="checkbox-group" id="segmentFilterGroup">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- TRL Level Filter -->
+                <div class="filter-section">
+                    <h3>TRL Level</h3>
+                    <div class="checkbox-group" id="trlFilterGroup">
+                        <label class="checkbox-label">
+                            <input type="checkbox" class="filter-checkbox" data-filter="trl" value="1">
+                            <span>TRL 1</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" class="filter-checkbox" data-filter="trl" value="2">
+                            <span>TRL 2</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" class="filter-checkbox" data-filter="trl" value="3">
+                            <span>TRL 3</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" class="filter-checkbox" data-filter="trl" value="4">
+                            <span>TRL 4</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" class="filter-checkbox" data-filter="trl" value="5">
+                            <span>TRL 5</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" class="filter-checkbox" data-filter="trl" value="6">
+                            <span>TRL 6</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" class="filter-checkbox" data-filter="trl" value="7">
+                            <span>TRL 7</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" class="filter-checkbox" data-filter="trl" value="8">
+                            <span>TRL 8</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" class="filter-checkbox" data-filter="trl" value="9">
+                            <span>TRL 9</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Funding Filter -->
+                <div class="filter-section">
+                    <h3>Funding Status</h3>
+                    <div class="checkbox-group" id="fundingFilterGroup">
+                        <label class="checkbox-label">
+                            <input type="checkbox" class="filter-checkbox" data-filter="funding" value="Yes">
+                            <span>Funded</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" class="filter-checkbox" data-filter="funding" value="No">
+                            <span>Not Funded</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Recognition Filter -->
+                <div class="filter-section">
+                    <h3>Recognition</h3>
+                    <div class="checkbox-group" id="recognitionFilterGroup">
+                        <label class="checkbox-label">
+                            <input type="checkbox" class="filter-checkbox" data-filter="recognition" value="Award Winners">
+                            <span>Award Winners</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" class="filter-checkbox" data-filter="recognition" value="Media recognized">
+                            <span>Media Recognized</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" class="filter-checkbox" data-filter="recognition" value="Others">
+                            <span>Others</span>
+                        </label>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="main-content">
+                <!-- Top Bar with Sort and View Toggle -->
+                <div class="top-bar">
+                    <div class="top-bar-left">
+                        <h2 class="results-title">Applications</h2>
+                    </div>
+                    <div class="top-bar-right">
+                        <div class="sort-container">
+                            <label for="sortBy" class="sort-label">Sort:</label>
+                            <select id="sortBy" class="sort-select">
+                                <option value="">Default</option>
+                                <option value="most-funded">Most Funded</option>
+                                <option value="largest-team">Largest Team</option>
+                                <option value="alphabetical">Alphabetical (A-Z)</option>
+                                <option value="trl-highest">TRL Level (Highest)</option>
+                                <option value="most-awarded">Most Awarded</option>
+                                <option value="most-recognized">Most Recognized</option>
+                            </select>
+                        </div>
+                        <div class="view-toggle">
+                            <button class="view-btn-toggle active" id="gridViewBtn" onclick="setViewMode('grid')" title="Grid View">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                    <rect x="2" y="2" width="6" height="6" rx="1"/>
+                                    <rect x="12" y="2" width="6" height="6" rx="1"/>
+                                    <rect x="2" y="12" width="6" height="6" rx="1"/>
+                                    <rect x="12" y="12" width="6" height="6" rx="1"/>
+                                </svg>
+                            </button>
+                            <button class="view-btn-toggle" id="listViewBtn" onclick="setViewMode('list')" title="List View">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                    <rect x="2" y="3" width="16" height="2" rx="1"/>
+                                    <rect x="2" y="9" width="16" height="2" rx="1"/>
+                                    <rect x="2" y="15" width="16" height="2" rx="1"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Applications Grid -->
+                <div class="applications-grid" id="applicationsGrid">
+                    <div class="loading">Loading applications...</div>
+                </div>
+
+                <!-- Applications List -->
+                <div class="applications-list" id="applicationsList">
+                    <div class="loading">Loading applications...</div>
+                </div>
+
+                <!-- Pagination -->
+                <div id="pagination"></div>
+            </main>
+        </div>
+
+        <!-- Application Detail View -->
+        <div id="detailView" class="detail-view hidden">
+            <div class="detail-view-header">
+                <button class="back-btn" onclick="goBack()">← Back to Applications</button>
             </div>
-        </div>
-
-        <!-- Applications Grid -->
-        <div class="applications-grid" id="applicationsGrid">
-            <div class="loading">Loading applications...</div>
-        </div>
-
-        <!-- Applications List -->
-        <div class="applications-list" id="applicationsList">
-            <div class="loading">Loading applications...</div>
-        </div>
-
-        <!-- Pagination -->
-        <div id="pagination"></div>
-
-        <!-- Application Detail Modal -->
-        <div id="detailModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <div id="modalBody"></div>
+            <div class="detail-view-content">
+                <div id="detailBody"></div>
             </div>
         </div>
     </div>
