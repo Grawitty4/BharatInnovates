@@ -50,6 +50,27 @@ body::before {
     animation: fadeInDown 0.6s ease-out;
 }
 
+.header-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.view-all-link {
+    font-size: 0.85em;
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.view-all-link:hover {
+    color: #764ba2;
+    text-decoration: underline;
+}
+
 .logo-container {
     display: flex;
     align-items: center;
@@ -826,6 +847,88 @@ body::before {
     text-align: center;
     margin: 20px 0;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Password Overlay (for full page protection) */
+.password-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 50%, rgba(240, 147, 251, 0.95) 100%);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 20px;
+}
+
+.password-overlay .password-box {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 1) 100%);
+    border-radius: 24px;
+    padding: 50px 60px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    max-width: 500px;
+    width: 100%;
+    animation: fadeInDown 0.5s ease-out;
+}
+
+.password-overlay .password-box h2 {
+    color: #333;
+    font-size: 2em;
+    margin: 0 0 15px 0;
+    font-weight: 700;
+}
+
+.password-overlay .password-box p {
+    color: #666;
+    font-size: 1.1em;
+    margin: 0 0 30px 0;
+    line-height: 1.6;
+}
+
+.password-overlay .password-box input[type="password"] {
+    width: 100%;
+    padding: 15px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 1.1em;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+    background: white;
+    box-sizing: border-box;
+}
+
+.password-overlay .password-box input[type="password"]:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.password-overlay .password-box button {
+    width: 100%;
+    padding: 15px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.password-overlay .password-box button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.password-overlay .password-box button:active {
+    transform: translateY(0);
 }
 
 .lock-icon {

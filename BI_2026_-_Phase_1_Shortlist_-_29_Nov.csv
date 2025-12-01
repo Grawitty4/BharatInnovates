@@ -1,0 +1,386 @@
+S. No.,ApplicationId,Startup/Company Legal Name,"Technology
+Readiness
+Level (TRL)",Theme,Sheet
+1,BHAR-477035,GRAINIQ INNOVATIONS PRIVATE LIMITED,9,Agri & Food Technologies,Table_1
+2,BHAR-467480,CYBOGLABS PRIVATE LIMITED,3,Blue Economy,Table_1
+3,BHAR-465711,Advanced Renewable Tandem-Photovoltaics India Pvt. Ltd.,5,"Energy, Sustainability, and Climate Change",Table_1
+4,BHAR-448999,CDSpace Robotics Private Limited,7,Space and Defence,Table_1
+5,BHAR-425959,ELECTROPRINT NEYUG PRIVATE LIMITED,3,Healthcare & MedTech,Table_1
+6,BHAR-357083,,4,Healthcare & MedTech,Table_1
+7,BHAR-344806,,3,Biotechnology,Table_1
+8,BHAR-345374,,6,Healthcare & MedTech,Table_1
+9,BHAR-346762,Edhaa Innovations Private Limited,6,Healthcare & MedTech,Table_1
+10,BHAR-324447,Agnikul Cosmos Pvt Ltd,6,Space and Defence,Table_1
+11,BHAR-324328,,3,Biotechnology,Table_1
+12,BHAR-325305,PlebC Innovations Private limited,6,Healthcare & MedTech,Table_1
+13,BHAR-214749,Intiot services pvt. Ltd.,9,Disaster Management & Resilient Infrastructure,Table_1
+14,BHAR-203544,Aumsat Technologies LLP,9,Smart Cities & Mobility,Table_1
+15,BHAR-195665,maritime info Lab Pvt ltd,8,Blue Economy,Table_1
+16,BHAR-185588,Inphlox Water Systems Private Limited,9,"Energy, Sustainability, and Climate Change",Table_1
+17,BHAR-095241,,4,Biotechnology,Table_1
+18,BHAR-947136,Vidcare Innovations Private Limited,5,Healthcare & MedTech,Table_1
+19,BHAR-836196,NILICO GREEN TECHNOLOGIES PVT LTD,4,"Advanced Materials, Rare-earth & Critical Minerals",Table_1
+20,BHAR-835652,Solaire Initiative Pvt Ltd,9,Biotechnology,Table_1
+21,BHAR-812067,ANURANAN CREATIVE SOLUTIONS PRIVATE LIMITED,5,Manufacturing & Industry 4.0,Table_1
+22,BHAR-701228,WeVOIS Labs Private Limited,9,"Energy, Sustainability, and Climate Change",Table_1
+23,BHAR-707789,ANURANAN CREATIVE SOLUTIONS PRIVATE LIMITED,6,Semiconductors,Table_1
+24,BHAR-702839,Nabhdrishti Aerospace Private Limited,5,Space and Defence,Table_1
+25,BHAR-685711,,6,Biotechnology,Table_1
+26,BHAR-355415,Xovian Aerospace Pvt Ltd,7,Space and Defence,Table_1
+27,BHAR-264756,Nuvelle Approche,5,Healthcare & MedTech,Table_1
+28,BHAR-265444,Bariflo Cybernetics Private Limited,7,Manufacturing & Industry 4.0,Table_1
+29,BHAR-228371,CUERON GLOBAL PRIVATE LIMITED,4,Agri & Food Technologies,Table_1
+30,BHAR-223199,,8,Agri & Food Technologies,Table_1
+31,BHAR-222966,Pantherun Technologies Private Limited,9,Next-Gen Communications,Table_1
+32,BHAR-201653,,4,Biotechnology,Table_1
+33,BHAR-206849,Imagine Labs Pvt Ltd,5,Agri & Food Technologies,Table_1
+34,BHAR-107916,SimDaaS Autonomy Pvt Ltd,7,Smart Cities & Mobility,Table_1
+35,BHAR-094163,,3,Biotechnology,Table_1
+36,BHAR-091344,,4,Biotechnology,Table_1
+37,BHAR-084055,Inventor's Den Pvt Ltd,8,Blue Economy,Table_1
+38,BHAR-088444,Arundhati Healthcare Private Limited,3,Biotechnology,Table_1
+39,BHAR-089996,Eliciton Innovations Private Limited,7,Biotechnology,Table_1
+40,BHAR-068025,Denovo Bioinnovation Private Limited,5,Healthcare & MedTech,Table_1
+41,BHAR-009514,,9,Agri & Food Technologies,Table_1
+42,BHAR-989125,,7,Biotechnology,Table_1
+43,BHAR-963878,Coratia Technologies Private Limited,9,Disaster Management & Resilient Infrastructure,Table_1
+44,BHAR-954019,WiSig Networks Private Limited,7,Next-Gen Communications,Table_1
+45,BHAR-952228,QuSyn Tech,4,Space and Defence,Table_1
+46,BHAR-954048,,5,Agri & Food Technologies,Table_1
+47,BHAR-959674,,5,Healthcare & MedTech,Table_1
+48,BHAR-946806,,3,Healthcare & MedTech,Table_1
+49,BHAR-863882,Aurassure Pvt Ltd,8,"Energy, Sustainability, and Climate Change",Table_1
+50,BHAR-869163,,5,Biotechnology,Table_1
+51,BHAR-788354,Sunfox Technologies Private Limited,9,Healthcare & MedTech,Table_1
+52,BHAR-762435,,6,Healthcare & MedTech,Table_1
+53,BHAR-762452,,6,Biotechnology,Table_1
+54,BHAR-653874,,4,Biotechnology,Table_1
+55,BHAR-398162,DDH Innovations LLP,6,"Energy, Sustainability, and Climate Change",Table_1
+56,BHAR-025339,Vecmocon Technologies Private Limited,9,Smart Cities & Mobility,Table_1
+57,BHAR-018899,,3,Agri & Food Technologies,Table_1
+58,BHAR-971468,,3,Manufacturing & Industry 4.0,Table_1
+59,BHAR-929394,X2Fuels and Energy Private Limited,7,"Energy, Sustainability, and Climate Change",Table_1
+60,BHAR-927909,Heamac Healthcare Private Limited,9,Healthcare & MedTech,Table_1
+61,BHAR-921131,HN TECHNOVATIONS LLP,8,Disaster Management & Resilient Infrastructure,Table_1
+62,BHAR-908148,Yali Mobility Private Limited,7,Smart Cities & Mobility,Table_1
+63,BHAR-902654,Raytom Medical Systems Private Limited,7,Manufacturing & Industry 4.0,Table_1
+64,BHAR-848354,RAU ECOSTONE PRIVATE LIMITED,7,"Energy, Sustainability, and Climate Change",Table_1
+65,BHAR-839014,Svabag Labs Private Limited,5,"Energy, Sustainability, and Climate Change",Table_1
+66,BHAR-835147,INDIGOTEX PRIVATE LIMITED,7,"Energy, Sustainability, and Climate Change",Table_1
+67,BHAR-834186,Cellverse pvt ltd,7,Healthcare & MedTech,Table_2
+68,BHAR-837606,Ecovative Innovations Private Limited,6,Agri & Food Technologies,Table_2
+69,BHAR-829264,NeoMotion Assistive Solutions Pvt Ltd,9,Smart Cities & Mobility,Table_2
+70,BHAR-828497,BetterToday Alternatives Private Limited,4,"Energy, Sustainability, and Climate Change",Table_2
+71,BHAR-828492,CHEMGREEN INNOVATIONS PRIVATE LIMITED,6,Agri & Food Technologies,Table_2
+72,BHAR-822150,Lifespark Technologies Private Limited,8,Healthcare & MedTech,Table_2
+73,BHAR-829687,iMumbai Semiconductor Private Limited,7,Semiconductors,Table_2
+74,BHAR-821443,,6,"Energy, Sustainability, and Climate Change",Table_2
+75,BHAR-828392,Galanto Innovations Pvt Ltd,8,Healthcare & MedTech,Table_2
+76,BHAR-829648,Drizzle Health India Pvt. Ltd.,5,Healthcare & MedTech,Table_2
+77,BHAR-824346,Godaam Innovations Pvt Ltd,7,Agri & Food Technologies,Table_2
+78,BHAR-816287,,9,Agri & Food Technologies,Table_2
+79,BHAR-814572,LivNSense GreenOps Private Limited,7,Smart Cities & Mobility,Table_2
+80,BHAR-816679,Gunsutra Pvt. Ltd.,6,Healthcare & MedTech,Table_2
+81,BHAR-817693,Machfly Aerospace Technologies Private Limited,4,Space and Defence,Table_2
+82,BHAR-818534,Wireless 4 Scale Laboratory Pvt Ltd,6,Space and Defence,Table_2
+83,BHAR-812206,R2E Technologies Private Limited,8,Disaster Management & Resilient Infrastructure,Table_2
+84,BHAR-816618,,6,Disaster Management & Resilient Infrastructure,Table_2
+85,BHAR-818121,Aignosis Artificial Intelligence Pvt. Lmt.,6,Healthcare & MedTech,Table_2
+86,BHAR-818720,Tsalla Aerospace Technologies Pvt Ltd,8,Space and Defence,Table_2
+87,BHAR-807209,BRAHMAION PVT. LTD.,5,"Advanced Materials, Rare-earth & Critical Minerals",Table_2
+88,BHAR-805019,uDot Braille Tech Pvt Ltd,6,Healthcare & MedTech,Table_2
+89,BHAR-807102,ARCHON MOTORS PRIVATE LIMITED,7,Smart Cities & Mobility,Table_2
+90,BHAR-802080,ALBATROSS ENERGETICS PRIVATE LIMITED,7,"Energy, Sustainability, and Climate Change",Table_2
+91,BHAR-803467,Green Aero Propulsion Pvt Ltd,7,"Energy, Sustainability, and Climate Change",Table_2
+92,BHAR-806905,Xpredict Automation Solutions Pvt Ltd,9,"Energy, Sustainability, and Climate Change",Table_2
+93,BHAR-804586,,4,Next-Gen Communications,Table_2
+94,BHAR-809365,,3,"Energy, Sustainability, and Climate Change",Table_2
+95,BHAR-809561,,7,Healthcare & MedTech,Table_2
+96,BHAR-795336,Tishyas Medical Device Development Solutions Private Limited,8,Healthcare & MedTech,Table_2
+97,BHAR-798405,Simhatel Technologies Pvt. Ltd.,4,Disaster Management & Resilient Infrastructure,Table_2
+98,BHAR-799867,Girsan Innovations Private Limited,4,Healthcare & MedTech,Table_2
+99,BHAR-794516,ADUZA Robotics and Automation Private Limited,9,Manufacturing & Industry 4.0,Table_2
+100,BHAR-798276,,3,"Energy, Sustainability, and Climate Change",Table_2
+101,BHAR-793115,VoltWorks Technologies Private Limited,9,Manufacturing & Industry 4.0,Table_2
+102,BHAR-799063,REVY Environmental Solutions Pvt. Ltd.,7,Biotechnology,Table_2
+103,BHAR-794731,,5,"Advanced Materials, Rare-earth & Critical Minerals",Table_2
+104,BHAR-797248,,4,Agri & Food Technologies,Table_2
+105,BHAR-782402,Anuriva Technologies private limited,3,Healthcare & MedTech,Table_2
+106,BHAR-785944,,4,Agri & Food Technologies,Table_2
+107,BHAR-787148,Medic Tech Pvt Ltd,6,Manufacturing & Industry 4.0,Table_2
+108,BHAR-781701,AgAutomate Private Limited,6,Agri & Food Technologies,Table_2
+109,BHAR-787339,PARENTHESES SYSTEMS PRIVATE LIMITED,9,Manufacturing & Industry 4.0,Table_2
+110,BHAR-785292,LogisticsNow Private Limited,9,Smart Cities & Mobility,Table_2
+111,BHAR-782445,Chimertech Private Limited,7,Biotechnology,Table_2
+112,BHAR-788193,,6,Healthcare & MedTech,Table_2
+113,BHAR-778058,UNINO Healthcare Pvt. Ltd.,5,Healthcare & MedTech,Table_2
+114,BHAR-772980,,6,Space and Defence,Table_2
+115,BHAR-767942,TRIGEN DECARBONISATION PVT. LTD.,9,"Energy, Sustainability, and Climate Change",Table_2
+116,BHAR-726148,,4,Manufacturing & Industry 4.0,Table_2
+117,BHAR-695807,Karetic Energy Private Limited,5,"Energy, Sustainability, and Climate Change",Table_2
+118,BHAR-696167,,3,Manufacturing & Industry 4.0,Table_2
+119,BHAR-682307,Greenovate Solutions Private Limited,5,"Energy, Sustainability, and Climate Change",Table_2
+120,BHAR-683536,Aryav Ecofriendly Resources Pvt Ltd,9,Agri & Food Technologies,Table_2
+121,BHAR-687856,Dextroware Devices Private Limited,9,Healthcare & MedTech,Table_2
+122,BHAR-689174,TRIPHAN HEALTHCARE PVT. LTD.,6,Healthcare & MedTech,Table_2
+123,BHAR-675314,Papyrus Diagnostics Private Limited,4,Healthcare & MedTech,Table_2
+124,BHAR-675718,Froots Technologies Private Limited,9,Agri & Food Technologies,Table_2
+125,BHAR-679267,Naayom Tech Private Limited,9,Agri & Food Technologies,Table_2
+126,BHAR-672496,BioSky Space Innovations Pvt. Ltd.,7,"Energy, Sustainability, and Climate Change",Table_2
+127,BHAR-677577,GREENLEAP ROBOTICS PRIVATE LIMITED,9,"Energy, Sustainability, and Climate Change",Table_2
+128,BHAR-673122,Altersage Innovations Private Limited,6,Agri & Food Technologies,Table_2
+129,BHAR-676453,Vaidic Srijan LLP,9,"Energy, Sustainability, and Climate Change",Table_2
+130,BHAR-677230,Bravecore Private Limited,5,Space and Defence,Table_2
+131,BHAR-661821,Satiq Concrete Manufacturer Pvt. Ltd.,6,"Energy, Sustainability, and Climate Change",Table_2
+132,BHAR-665441,Ved Sanjeevani Private Limited,7,Biotechnology,Table_2
+133,BHAR-668387,,7,Manufacturing & Industry 4.0,Table_3
+134,BHAR-667622,Enfireix Technologies Pvt Ltd,9,Healthcare & MedTech,Table_3
+135,BHAR-663520,QUANTSOLAR TECHNOLOGIES PRIVATE LIMITED,9,"Energy, Sustainability, and Climate Change",Table_3
+136,BHAR-661487,,5,Healthcare & MedTech,Table_3
+137,BHAR-656719,RAIL LABS PRIVATE LIMITED,5,Manufacturing & Industry 4.0,Table_3
+138,BHAR-652432,Terrastack Technologies Private Limited,7,Disaster Management & Resilient Infrastructure,Table_3
+139,BHAR-659416,Esyacura Medical Technologies Pvt Ltd,6,Healthcare & MedTech,Table_3
+140,BHAR-654261,Ananant Systems Private Limited,7,Space and Defence,Table_3
+141,BHAR-653085,GB Texcoat Solution Pvt Ltd,6,Space and Defence,Table_3
+142,BHAR-652760,FarmwiseAI Private Limwited,6,Agri & Food Technologies,Table_3
+143,BHAR-659010,AmyScan Healthcare Pvt. Ltd.,5,Biotechnology,Table_3
+144,BHAR-643094,Greenomers Private Limited,9,"Energy, Sustainability, and Climate Change",Table_3
+145,BHAR-646656,Auralytix Medtech Private Limited,4,Healthcare & MedTech,Table_3
+146,BHAR-642053,WeHear Innovations Pvt. Ltd.,9,Healthcare & MedTech,Table_3
+147,BHAR-642885,Agnit Semiconductors Private Limited,7,Semiconductors,Table_3
+148,BHAR-648364,Intech Harness Pvt Ltd,9,Agri & Food Technologies,Table_3
+149,BHAR-639131,REIO SYSTEMS PRIVATE LIMITED,7,Next-Gen Communications,Table_3
+150,BHAR-615058,EnthuDes Design Private Limited,6,Healthcare & MedTech,Table_3
+151,BHAR-585084,Neuracle Health Private Limited,9,Healthcare & MedTech,Table_3
+152,BHAR-566170,Aaizel International Technologies Pvt Ltd,6,"Energy, Sustainability, and Climate Change",Table_3
+153,BHAR-557475,,8,Next-Gen Communications,Table_3
+154,BHAR-559777,Hiranya Earth Private Limited,4,Manufacturing & Industry 4.0,Table_3
+155,BHAR-555021,KRITYUM HEALTHTECH PRIVATE LIMITED,6,Healthcare & MedTech,Table_3
+156,BHAR-551422,Cellark Powertech Private Limited,8,"Advanced Materials, Rare-earth & Critical Minerals",Table_3
+157,BHAR-553709,Beta Tank Robotics Pvt Ltd,8,Manufacturing & Industry 4.0,Table_3
+158,BHAR-556800,RonnaLabs Private Limited,7,Manufacturing & Industry 4.0,Table_3
+159,BHAR-548485,Symbica Private Limited,5,Healthcare & MedTech,Table_3
+160,BHAR-549777,VELQUEST LABORATORIES PVT LTD,5,Healthcare & MedTech,Table_3
+161,BHAR-533564,Minimines Cleantech Solutions Pvt. Ltd.,9,"Advanced Materials, Rare-earth & Critical Minerals",Table_3
+162,BHAR-538701,LiqSure Systems Pvt. Ltd.,9,"Energy, Sustainability, and Climate Change",Table_3
+163,BHAR-534072,CLUIX Private Limited,9,Biotechnology,Table_3
+164,BHAR-534525,Polyorbit Pvt. Ltd.,5,Biotechnology,Table_3
+165,BHAR-534232,Ai Health Highway India Private Limited,9,Healthcare & MedTech,Table_3
+166,BHAR-535646,Easiofy Solutions Pvt Ltd,7,Healthcare & MedTech,Table_3
+167,BHAR-488022,Diagopreutic Private Limited,7,Healthcare & MedTech,Table_3
+168,BHAR-474556,Sense Health Technologies Private Limited,5,Healthcare & MedTech,Table_3
+169,BHAR-423918,Electica Energy,9,"Energy, Sustainability, and Climate Change",Table_3
+170,BHAR-359210,,4,Healthcare & MedTech,Table_3
+171,BHAR-359004,Diagnovate Private Limited,6,Healthcare & MedTech,Table_3
+172,BHAR-243011,Vanix Technologies Private Limited,9,Manufacturing & Industry 4.0,Table_3
+173,BHAR-244642,Ksham Innovation Private Limited,5,Healthcare & MedTech,Table_3
+174,BHAR-245162,Bravecore Pvt Ltd,7,Smart Cities & Mobility,Table_3
+175,BHAR-236402,Texoedge Innovation Private Limited,7,"Energy, Sustainability, and Climate Change",Table_3
+176,BHAR-231993,OPTICAL SYNERGY SYSTEMS PRIVATE LIMITED,6,Agri & Food Technologies,Table_3
+177,BHAR-221581,Gudlyf Mobility Private Limited,7,"Energy, Sustainability, and Climate Change",Table_3
+178,BHAR-214459,Ayati Devices Private Limited,5,Healthcare & MedTech,Table_3
+179,BHAR-213996,Samarthya Defence Research and Technology Private Limited,6,Space and Defence,Table_3
+180,BHAR-116351,TechXEarthSpace,5,"Energy, Sustainability, and Climate Change",Table_3
+181,BHAR-104535,,7,Smart Cities & Mobility,Table_3
+182,BHAR-108411,Biofield Power Pvt Ltd,6,"Energy, Sustainability, and Climate Change",Table_3
+183,BHAR-104258,Trishulopulsion Technology Private Limited,5,Space and Defence,Table_3
+184,BHAR-103439,EMERGY Enviro Private Limited,9,"Energy, Sustainability, and Climate Change",Table_3
+185,BHAR-109055,Dash Dynamic Private Limited,8,Smart Cities & Mobility,Table_3
+186,BHAR-086822,Aerodramus Private Limited,8,Manufacturing & Industry 4.0,Table_3
+187,BHAR-006679,M/S Primary Healthtech Private Limited,9,Healthcare & MedTech,Table_3
+188,BHAR-007057,,4,Blue Economy,Table_3
+189,BHAR-993221,Medprime Technologies Private Limited,9,Healthcare & MedTech,Table_3
+190,BHAR-984285,Ayukriyam Innovations Private Limited,6,Healthcare & MedTech,Table_3
+191,BHAR-987247,Genomiki Solutions Pvt. Ltd.,4,Healthcare & MedTech,Table_3
+192,BHAR-987417,"LUGAM COCOON PRIVATE LIMITED, RANCHI, JHARKHAND",8,Manufacturing & Industry 4.0,Table_3
+193,BHAR-886633,Driblet Private Limited,8,Smart Cities & Mobility,Table_3
+194,BHAR-869934,ECOSTRATA INFRA PRIVATE LIMITED,9,"Energy, Sustainability, and Climate Change",Table_3
+195,BHAR-863761,Dentifrice Private Limited,8,Healthcare & MedTech,Table_3
+196,BHAR-866337,Greenathon Technologies Pvt. Ltd.,7,"Energy, Sustainability, and Climate Change",Table_3
+197,BHAR-859483,"Foundation for Innovation & Research in Science & Technology , IIT Kanpur",4,Space and Defence,Table_3
+198,BHAR-772291,Huskage Innovations Private Limited,6,"Energy, Sustainability, and Climate Change",Table_3
+199,BHAR-774822,,3,Agri & Food Technologies,Table_4
+200,BHAR-752198,Cellegant Energy Systems Private Limited,4,"Energy, Sustainability, and Climate Change",Table_4
+201,BHAR-748304,MACR MAYR INDIA PVT LTD,7,"Energy, Sustainability, and Climate Change",Table_4
+202,BHAR-373210,RiBioP AgroTech Pvt Ltd,6,Agri & Food Technologies,Table_4
+203,BHAR-241657,Sdeeparogya AI Pvt Ltd,4,Healthcare & MedTech,Table_4
+204,BHAR-249149,GRIDSENTRY INDIA PRIVATE LIMITED,7,Manufacturing & Industry 4.0,Table_4
+205,BHAR-222603,Prodancy Pvt. Limited,7,Healthcare & MedTech,Table_4
+206,BHAR-167161,Openwater.in Private Limited,9,"Energy, Sustainability, and Climate Change",Table_4
+207,BHAR-015267,PragyanikAI Pvt Ltd,5,Agri & Food Technologies,Table_4
+208,BHAR-995037,i4Marine technologies Private Limited,8,Blue Economy,Table_4
+209,BHAR-986233,,3,Smart Cities & Mobility,Table_4
+210,BHAR-985424,MCS Cargar Private Limited,8,Smart Cities & Mobility,Table_4
+211,BHAR-974350,Vigorus AI Private Limited,7,Healthcare & MedTech,Table_4
+212,BHAR-964584,Inventive Scientific Minds LLP,7,"Energy, Sustainability, and Climate Change",Table_4
+213,BHAR-966681,SAUBHA AERIAL SYSTEMS PRIVATE LIMITED,7,Space and Defence,Table_4
+214,BHAR-901088,,4,Healthcare & MedTech,Table_4
+215,BHAR-891472,Janitri Innovations Pvt Ltd,9,Healthcare & MedTech,Table_4
+216,BHAR-888251,DeepLase Technologies Pvt Ltd,4,Manufacturing & Industry 4.0,Table_4
+217,BHAR-882396,Jal jeevan agro tech pvt,6,Agri & Food Technologies,Table_4
+218,BHAR-873398,Aerobiosys Innovations,8,Healthcare & MedTech,Table_4
+219,BHAR-869385,Urban Air Labs Private Limited,8,Biotechnology,Table_4
+220,BHAR-864704,Feynman Energy Private Limited,6,"Energy, Sustainability, and Climate Change",Table_4
+221,BHAR-861128,OUI Medical,8,Healthcare & MedTech,Table_4
+222,BHAR-869189,S4 Sensing Pvt. Ltd.,6,"Energy, Sustainability, and Climate Change",Table_4
+223,BHAR-861551,Lenviz Technologies Private Limited,9,Space and Defence,Table_4
+224,BHAR-853255,DG PROPULSION PRIVATE LIMITED,8,Space and Defence,Table_4
+225,BHAR-857042,Nanokriti Private Limited,9,"Energy, Sustainability, and Climate Change",Table_4
+226,BHAR-855897,BeAble Health Pvt Ltd,8,Healthcare & MedTech,Table_4
+227,BHAR-853563,Armatrix Automations Private Limited,4,Space and Defence,Table_4
+228,BHAR-855164,Glowvista Instruments Pvt. Ltd.,4,Healthcare & MedTech,Table_4
+229,BHAR-859497,Revin Techno Solutions,7,Agri & Food Technologies,Table_4
+230,BHAR-855196,VAYUJAL TECHNOLOGIES PRIVATE LIMITED,7,"Energy, Sustainability, and Climate Change",Table_4
+231,BHAR-857197,Meister-Gen Technologies Private Limited,9,Disaster Management & Resilient Infrastructure,Table_4
+232,BHAR-852484,FLH Kleanair And Klean Energy India Pvt Ltd,5,Healthcare & MedTech,Table_4
+233,BHAR-846366,Susan Future Technologies Pvt Ltd,7,Disaster Management & Resilient Infrastructure,Table_4
+234,BHAR-844209,Quixotix Bioprinting Private Limited,4,Healthcare & MedTech,Table_4
+235,BHAR-792322,Brela Innovations Private Limited,4,Healthcare & MedTech,Table_4
+236,BHAR-796341,NUVIATECH DEVICES PRIVATE LIMITED,4,Healthcare & MedTech,Table_4
+237,BHAR-775432,WaWe Waste to Wealth Sustainability Pvt. Ltd.,9,Biotechnology,Table_4
+238,BHAR-762593,BIOM INNOVATIONS PVT LTD,4,Biotechnology,Table_4
+239,BHAR-762378,NCF Green Energy Pvt Ltd,6,"Energy, Sustainability, and Climate Change",Table_4
+240,BHAR-768800,VDT PIPELINE INTEGRITY SOLUTIONS PVT LTD,9,"Energy, Sustainability, and Climate Change",Table_4
+241,BHAR-764325,Avinya NeuroTech Private Limited,4,Healthcare & MedTech,Table_4
+242,BHAR-751437,VU-Dynamics Private Limited,8,Space and Defence,Table_4
+243,BHAR-756833,Simactricals Private Limited,7,Smart Cities & Mobility,Table_4
+244,BHAR-758052,Matterwave Technologies Pvt. Ltd.,4,Semiconductors,Table_4
+245,BHAR-751453,EaffoCare Innovation Pvt Ltd,6,Healthcare & MedTech,Table_4
+246,BHAR-747790,Ekvayu Tech Private Limited,6,Space and Defence,Table_4
+247,BHAR-745253,Augle A.I. Pvt. Ltd.,8,Manufacturing & Industry 4.0,Table_4
+248,BHAR-743274,E- Sustain Power Private Limited,6,Agri & Food Technologies,Table_4
+249,BHAR-746133,MadVR Solutions Private Limtied,9,Healthcare & MedTech,Table_4
+250,BHAR-739444,,3,Blue Economy,Table_4
+251,BHAR-733996,PUR ENERGY LIMITED,9,"Energy, Sustainability, and Climate Change",Table_4
+252,BHAR-737195,GISKernel Technologies pvt ltd.,8,Disaster Management & Resilient Infrastructure,Table_4
+253,BHAR-701214,,5,Semiconductors,Table_4
+254,BHAR-653067,,4,Next-Gen Communications,Table_4
+255,BHAR-632108,Novara Global Ventures Private Limited,7,Manufacturing & Industry 4.0,Table_4
+256,BHAR-634769,Torus Robotics Pvt Ltd,8,"Energy, Sustainability, and Climate Change",Table_4
+257,BHAR-637318,Agri Joy Private Limited,9,Agri & Food Technologies,Table_4
+258,BHAR-609959,Innoshakti Labs Private Limited,3,Healthcare & MedTech,Table_4
+259,BHAR-607333,Sephirah Innovations Pvt. Ltd.,7,Healthcare & MedTech,Table_4
+260,BHAR-539477,Folium Sensing Private Ltd,6,Next-Gen Communications,Table_4
+261,BHAR-505570,FERRY LIFESCIENCES PRIVATE LIMITED,3,Healthcare & MedTech,Table_4
+262,BHAR-501819,Healyantra Healthcare Innovations Private Limited,4,Healthcare & MedTech,Table_4
+263,BHAR-502723,Sunmint Energy Pvt. Ltd.,9,Space and Defence,Table_4
+264,BHAR-502406,Manjha Technologies Private Limited,9,Agri & Food Technologies,Table_4
+265,BHAR-499146,1000 Farms Agritech Private Limited,9,Biotechnology,Table_5
+266,BHAR-497994,Fib-Sol Life Technologies Pvt Ltd,4,Biotechnology,Table_5
+267,BHAR-492884,Navariti Innovation Private Limited,8,Manufacturing & Industry 4.0,Table_5
+268,BHAR-483525,seismic hazard and risk investigations pvt ltd,5,Disaster Management & Resilient Infrastructure,Table_5
+269,BHAR-489745,Ekosight Technologies Private Limited,9,Agri & Food Technologies,Table_5
+270,BHAR-487829,Sonolight Imaging Innovations Private Limited,7,Healthcare & MedTech,Table_5
+271,BHAR-424193,Fruvetech Pvt Ltd,9,Agri & Food Technologies,Table_5
+272,BHAR-402118,IINDEPRO DYNAMICS PRIVATE LIMITED,9,Manufacturing & Industry 4.0,Table_5
+273,BHAR-406978,M-Lense Research Private Limited,9,Agri & Food Technologies,Table_5
+274,BHAR-396403,Orish J Bioworks Private Limited,4,Biotechnology,Table_5
+275,BHAR-382822,Dyau Robotics Private Limited,5,Space and Defence,Table_5
+276,BHAR-381406,SparkyAi Private Limited,8,Agri & Food Technologies,Table_5
+277,BHAR-389196,,3,Next-Gen Communications,Table_5
+278,BHAR-383738,Dognosis India Pvt Ltd.,7,Healthcare & MedTech,Table_5
+279,BHAR-378665,Kibbutz Agrifood Pvt Ltd,8,Agri & Food Technologies,Table_5
+280,BHAR-285983,Innect Technologies Private Limited,5,Agri & Food Technologies,Table_5
+281,BHAR-287026,"Ostic Pharma Pvt Ltd, SINE, IIT Bombay",5,Healthcare & MedTech,Table_5
+282,BHAR-265279,New Unnat India Techno Solutions and Innovation Pvt. Ltd.,7,Healthcare & MedTech,Table_5
+283,BHAR-265601,Prezitec Health Private Limited,4,Healthcare & MedTech,Table_5
+284,BHAR-262565,Matwhiz Ingenuity Private Limited,7,Manufacturing & Industry 4.0,Table_5
+285,BHAR-258392,Jarbits Pvt Ltd,6,Disaster Management & Resilient Infrastructure,Table_5
+286,BHAR-252455,UPAJ AI Solutions Private Limited,8,Agri & Food Technologies,Table_5
+287,BHAR-256486,Oralvis Healthcare Pvt. Ltd.,6,Healthcare & MedTech,Table_5
+288,BHAR-248443,Aerosys Aviation India Pvt. Ltd.,8,Space and Defence,Table_5
+289,BHAR-223795,ISMO Bio-Photonics Private Limited,6,Healthcare & MedTech,Table_5
+290,BHAR-177884,Trigun Robotic Systems Private Limited,8,Agri & Food Technologies,Table_5
+291,BHAR-174192,Dheya Engineering Technologies Pvt Ltd,6,Space and Defence,Table_5
+292,BHAR-173117,Pravah Engineering,6,Smart Cities & Mobility,Table_5
+293,BHAR-171753,Perovskite Innovation Private Limited,4,"Energy, Sustainability, and Climate Change",Table_5
+294,BHAR-172005,C-DISC Technologies Private Limited,8,Disaster Management & Resilient Infrastructure,Table_5
+295,BHAR-169901,,4,"Energy, Sustainability, and Climate Change",Table_5
+296,BHAR-164736,Adsys Medtech Pvt. Ltd.,4,Healthcare & MedTech,Table_5
+297,BHAR-165978,JSP Enviro Private Limited,9,"Energy, Sustainability, and Climate Change",Table_5
+298,BHAR-135640,Hardy Opto-Digital Pvt. Ltd.,4,Space and Defence,Table_5
+299,BHAR-062014,Enviroforge Pvt. Ltd.,4,Agri & Food Technologies,Table_5
+300,BHAR-995445,Med Inno Tec Pvt ltd,4,Healthcare & MedTech,Table_5
+301,BHAR-991547,IROV TECHNOLOGIES PVT LTD,9,Manufacturing & Industry 4.0,Table_5
+302,BHAR-973391,"Curium Life Tech Pvt ltd.,",4,Healthcare & MedTech,Table_5
+303,BHAR-883269,Maraal Aerospace Private Limited,9,Space and Defence,Table_5
+304,BHAR-877491,RF NANOCOMPOSITES PRIVATE LIMITED,5,Space and Defence,Table_5
+305,BHAR-865282,FLASH CRYOGENICS PRIVATE LIMITED,5,"Energy, Sustainability, and Climate Change",Table_5
+306,BHAR-863305,EndureAir Systems Private Limited,9,Space and Defence,Table_5
+307,BHAR-865638,Geo Climate Risk Solutions Pvt Ltd,9,Disaster Management & Resilient Infrastructure,Table_5
+308,BHAR-778259,Climafour Labs Pvt. Ltd.,3,"Energy, Sustainability, and Climate Change",Table_5
+309,BHAR-778485,Theranautilus Private Limited,6,Healthcare & MedTech,Table_5
+310,BHAR-741229,Visron Private Limited,6,Manufacturing & Industry 4.0,Table_5
+311,BHAR-736452,,7,Agri & Food Technologies,Table_5
+312,BHAR-733457,East Ocyon Bio Private Limited,4,Biotechnology,Table_5
+313,BHAR-627693,RAMJA Genosensor Pvt.Ltd.,8,Healthcare & MedTech,Table_5
+314,BHAR-628884,MALHARI PROJECTS PVT LTD,8,"Energy, Sustainability, and Climate Change",Table_5
+315,BHAR-566176,Airth Research Private Limited,9,"Energy, Sustainability, and Climate Change",Table_5
+316,BHAR-565897,PrecizionIQ Data Pvt. Ltd,4,Healthcare & MedTech,Table_5
+317,BHAR-564282,Exposit Immersive Solution Private Limited,7,Manufacturing & Industry 4.0,Table_5
+318,BHAR-545374,MedrinZ BIO Private Limited,8,Healthcare & MedTech,Table_5
+319,BHAR-549915,Qzense Labs Pvt Ltd,7,Agri & Food Technologies,Table_5
+320,BHAR-427908,CLUIX Private Limited,9,"Energy, Sustainability, and Climate Change",Table_5
+321,BHAR-429311,Ares Systems Pvt Ltd,4,"Energy, Sustainability, and Climate Change",Table_5
+322,BHAR-427452,AIResQ ClimSols Pvt. Ltd.,7,Smart Cities & Mobility,Table_5
+323,BHAR-423541,,4,Healthcare & MedTech,Table_5
+324,BHAR-369320,MICOB PRIVATE LIMITED,9,Smart Cities & Mobility,Table_5
+325,BHAR-351479,COVERIFY SYSTEMS TECHNOLOGY LLP,9,Semiconductors,Table_5
+326,BHAR-253145,Chakr Innovation Pvt Ltd,9,"Energy, Sustainability, and Climate Change",Table_5
+327,BHAR-256955,OrbitAID Aerospace Private Limited,7,Space and Defence,Table_5
+328,BHAR-241102,ScaNxt Scientific Technologies Pvt Ltd,9,Agri & Food Technologies,Table_5
+329,BHAR-179506,Vacus Tech Pvt Ltd,8,Manufacturing & Industry 4.0,Table_5
+330,BHAR-177465,,9,Healthcare & MedTech,Table_5
+331,BHAR-179330,MedBlue Innovations Pvt Ltd,7,Healthcare & MedTech,Table_6
+332,BHAR-174292,Aspiel Syringes Private Limited,9,Healthcare & MedTech,Table_6
+333,BHAR-174714,Ubifly Technologies Pvt Ltd,6,Smart Cities & Mobility,Table_6
+334,BHAR-175539,,9,Manufacturing & Industry 4.0,Table_6
+335,BHAR-162521,Heethox-K Private Limited,6,Healthcare & MedTech,Table_6
+336,BHAR-078335,Eranki Labs Private Limited,5,Healthcare & MedTech,Table_6
+337,BHAR-668545,Caldor Health Technologies Private Limited,4,Healthcare & MedTech,Table_6
+338,BHAR-668999,OKO ICARE SOLUTIONS PVT LTD,6,Healthcare & MedTech,Table_6
+339,BHAR-668441,Lenek Technologies Private Limited,8,Healthcare & MedTech,Table_6
+340,BHAR-632735,Kriash MedTech Private Limited,4,Healthcare & MedTech,Table_6
+341,BHAR-632509,QOSMIC Satellite Systems Pvt. Ltd.,6,Space and Defence,Table_6
+342,BHAR-615960,,6,"Energy, Sustainability, and Climate Change",Table_6
+343,BHAR-611374,Canectar Foods Pvt Ltd,8,Agri & Food Technologies,Table_6
+344,BHAR-605495,HEM Dimensions Private Limited,6,Manufacturing & Industry 4.0,Table_6
+345,BHAR-603479,Bharat Helix Private Limited,4,Healthcare & MedTech,Table_6
+346,BHAR-591426,DREAMAEROSPACE TECHNOLOGIES PVT. LTD.,5,Space and Defence,Table_6
+347,BHAR-592708,xIoTz Private Limited,9,Space and Defence,Table_6
+348,BHAR-595778,,4,"Energy, Sustainability, and Climate Change",Table_6
+349,BHAR-595862,XTERRA ROBOTICS PRIVATE LIMITED,6,Space and Defence,Table_6
+350,BHAR-584776,Avris Environment Technologies Pvt Ltd,9,"Energy, Sustainability, and Climate Change",Table_6
+351,BHAR-571482,DILATON TECHNOLOGIES PVT LTD,9,Space and Defence,Table_6
+352,BHAR-564902,GENEXT GENOMICS PVT LTD,7,Biotechnology,Table_6
+353,BHAR-552780,Vyuhaa Med Data Private Limited,3,Healthcare & MedTech,Table_6
+354,BHAR-554171,SOLVINN MEDTECH PRIVATE LIMITED,4,Healthcare & MedTech,Table_6
+355,BHAR-537214,EXSURE PRIVATE LIMITED,4,Healthcare & MedTech,Table_6
+356,BHAR-517625,Pacify Medical Technologies Private Limited,8,Healthcare & MedTech,Table_6
+357,BHAR-509242,ClimAgro Analytics,7,"Energy, Sustainability, and Climate Change",Table_6
+358,BHAR-474840,NEMA Artificial Intelligence Pvt Ltd.,6,Healthcare & MedTech,Table_6
+359,BHAR-475776,ABX3PV Private Limited,7,"Energy, Sustainability, and Climate Change",Table_6
+360,BHAR-461437,Rootskart Agritech Pvt Ltd,8,Agri & Food Technologies,Table_6
+361,BHAR-454156,FlexMotion Technologies,4,Manufacturing & Industry 4.0,Table_6
+362,BHAR-451758,Evoxia Labs India Private Limited,7,Biotechnology,Table_6
+363,BHAR-449405,Micromation Systems Pvt Ltd,7,Manufacturing & Industry 4.0,Table_6
+364,BHAR-437995,TECNOD8 INNOVATIONS PRIVATE LIMITED,7,Manufacturing & Industry 4.0,Table_6
+365,BHAR-425759,,3,Healthcare & MedTech,Table_6
+366,BHAR-415744,TRINANO TECHNOLOGIES PRIVATE LIMITED,8,"Energy, Sustainability, and Climate Change",Table_6
+367,BHAR-394178,Detoxyfi Technologies Private Limited,8,Disaster Management & Resilient Infrastructure,Table_6
+368,BHAR-391079,Xyma Analytics Private Limited,9,Manufacturing & Industry 4.0,Table_6
+369,BHAR-396718,OREASE ORAL CARE SOLUTIONS PVT LTD,4,Healthcare & MedTech,Table_6
+370,BHAR-362312,Solinas Integrity Private Limited,9,Smart Cities & Mobility,Table_6
+371,BHAR-312179,IIOT INNOVATION PRIVATE LIMITED,7,Biotechnology,Table_6
+372,BHAR-264731,NanoTherapx Innovation Private Limited,4,Healthcare & MedTech,Table_6
+373,BHAR-213538,nxtQ Private Limited,4,Healthcare & MedTech,Table_6
+374,BHAR-185864,Indigeneous Energy Storage technologies pvt ltd,8,"Advanced Materials, Rare-earth & Critical Minerals",Table_6
+375,BHAR-179128,Flameback Tech Pvt Ltd,8,Space and Defence,Table_6
+376,BHAR-173742,Aethrone Aerospace,7,Space and Defence,Table_6
+377,BHAR-159496,,3,Healthcare & MedTech,Table_6
+378,BHAR-742677,,9,Disaster Management & Resilient Infrastructure,Table_6
+379,BHAR-962236,Sequretek IT Solutions Private Limited,4,"Advanced Computing (Supercomputing, AI, Quantum",Table_6
+380,BHAR-827210,Bidaal Technology Private Limited,9,"Advanced Computing (Supercomputing, AI, Quantum",Table_6
+381,BHAR-855128,TARDID Technologies Private Limited,9,"Advanced Computing (Supercomputing, AI, Quantum",Table_6
+382,BHAR-748173,Mythyaverse Private Limited,9,"Advanced Computing (Supercomputing, AI, Quantum",Table_6
+383,BHAR-433192,Orage Digital Pvt. Ltd,8,"Advanced Computing (Supercomputing, AI, Quantum",Table_6

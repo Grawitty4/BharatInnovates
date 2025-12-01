@@ -1,17 +1,84 @@
 // Application Review Portal
 let applications = [];
 let filteredApplications = [];
-let comments = JSON.parse(localStorage.getItem('applicationComments') || '{}');
+let comments = {};
+try {
+    const commentsStr = localStorage.getItem('applicationComments');
+    if (commentsStr) {
+        comments = JSON.parse(commentsStr);
+    }
+} catch (e) {
+    console.warn('Failed to parse comments from localStorage:', e);
+    comments = {};
+}
 let currentPage = 1;
 const itemsPerPage = 9; // 3x3 grid
 let currentSort = '';
 let viewMode = localStorage.getItem('viewMode') || 'grid'; // 'grid' or 'list'
 
+// Determine which data file to load
+function getDataFile() {
+    // Check if we're on the allapplications page
+    // Check pathname, href, and also check the HTML title or body class
+    const path = window.location.pathname;
+    const href = window.location.href;
+    const title = document.title || '';
+    
+    // Multiple ways to detect allapplications page
+    const isAllApplications = path.includes('allapplications') || 
+                             path.includes('all_applications') ||
+                             href.includes('allapplications') ||
+                             title.includes('All Applications');
+    
+    if (isAllApplications) {
+        // All applications page: load all 1186 applications
+        console.log('✓ Detected allapplications page');
+        console.log('  Pathname:', path);
+        console.log('  Href:', href);
+        return '/Applications_1186_final_final.json'; // Use absolute path
+    }
+    // Default view: load shortlisted applications (383 from CSV)
+    console.log('✓ Detected default page');
+    console.log('  Pathname:', path);
+    return '/shortlisted_applications.json'; // Use absolute path
+}
+
 // Load applications from JSON
 async function loadApplications() {
     try {
-        const response = await fetch('Applications_1186_final_final.json');
+        const dataFile = getDataFile();
+        console.log('Loading data file:', dataFile);
+        
+        // dataFile is already an absolute path (starts with /)
+        const dataUrl = dataFile;
+        console.log('Fetching from URL:', dataUrl);
+        
+        const response = await fetch(dataUrl);
+        
+        console.log('Response status:', response.status);
+        console.log('Response content-type:', response.headers.get('content-type'));
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Response error text:', errorText.substring(0, 200));
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        // Check if response is actually JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            const text = await response.text();
+            console.error('Response is not JSON. First 200 chars:', text.substring(0, 200));
+            throw new Error(`Expected JSON but got ${contentType || 'unknown type'}`);
+        }
+        
         applications = await response.json();
+        console.log(`Loaded ${applications.length} applications`);
+        
+        if (!applications || applications.length === 0) {
+            throw new Error('No applications found in data file');
+        }
+        
         filteredApplications = applications;
         populateFilters();
         renderApplications();
@@ -22,8 +89,17 @@ async function loadApplications() {
         checkInitialHash();
     } catch (error) {
         console.error('Error loading applications:', error);
-        document.getElementById('applicationsGrid').innerHTML = 
-            '<div class="empty-state"><h2>Error Loading Data</h2><p>Please ensure Applications_1186_final_final.json is in the same directory.</p></div>';
+        console.error('Error stack:', error.stack);
+        const errorMsg = `<div class="empty-state">
+            <h2>Error Loading Data</h2>
+            <p>${error.message}</p>
+            <p>Expected file: ${getDataFile()}</p>
+            <p>Please check the browser console for more details.</p>
+        </div>`;
+        document.getElementById('applicationsGrid').innerHTML = errorMsg;
+        if (document.getElementById('applicationsList')) {
+            document.getElementById('applicationsList').innerHTML = errorMsg;
+        }
     }
 }
 
@@ -437,23 +513,59 @@ function goToPage(page) {
 
 // Open application detail in new tab/window
 function openApplicationInNewTab(applicationId) {
-    // Open in new tab with hash
-    const currentUrl = window.location.origin + window.location.pathname;
-    const newUrl = currentUrl + '#' + applicationId;
-    window.open(newUrl, '_blank');
+    // Determine if we're on allapplications page or default page
+    const path = window.location.pathname;
+    const isAllApplications = path.includes('allapplications');
+    
+    // Build URL with path-based routing
+    const currentUrl = window.location.origin;
+    
+    if (isAllApplications) {
+        // For allapplications page: /allapplications/ApplicationId
+        const newUrl = currentUrl + '/allapplications/' + applicationId;
+        window.open(newUrl, '_blank');
+    } else {
+        // For default page: use path-based /ApplicationId
+        const newUrl = currentUrl + '/' + applicationId;
+        window.open(newUrl, '_blank');
+    }
 }
 
-// Show application detail in new view (called when hash is present)
+// Show application detail in new view (called when path or hash is present)
 function showDetail(applicationId) {
-    // Update URL hash to enable direct linking and browser back/forward
-    window.location.hash = applicationId;
+    // Check if we're on allapplications page
+    const path = window.location.pathname;
+    const isAllApplications = path.includes('allapplications');
+    
+    if (isAllApplications) {
+        // Use path-based routing for allapplications page: /allapplications/ApplicationId
+        const newPath = '/allapplications/' + applicationId;
+        window.history.pushState({applicationId: applicationId}, '', newPath);
+    } else {
+        // Use path-based routing for default page: /ApplicationId
+        const newPath = '/' + applicationId;
+        window.history.pushState({applicationId: applicationId}, '', newPath);
+    }
+    
     renderDetailView(applicationId);
 }
 
 // Render detail view
 function renderDetailView(applicationId) {
+    // Wait for applications to load if not loaded yet
+    if (!applications || applications.length === 0) {
+        console.log('Applications not loaded yet, waiting...');
+        // Wait a bit and try again
+        setTimeout(() => {
+            renderDetailView(applicationId);
+        }, 200);
+        return;
+    }
+    
     const app = applications.find(a => a.ApplicationId === applicationId);
     if (!app) {
+        console.log(`Application not found: ${applicationId}`);
+        console.log(`Total applications loaded: ${applications.length}`);
         // Application not found, go back to list
         goBack();
         return;
@@ -924,8 +1036,16 @@ function renderComments(applicationId) {
 
 // Go back to applications list
 function goBack() {
-    // Remove hash from URL
-    window.location.hash = '';
+    const path = window.location.pathname;
+    const isAllApplications = path.includes('allapplications');
+    
+    if (isAllApplications) {
+        // For allapplications page: go back to /allapplications
+        window.history.pushState({}, '', '/allapplications');
+    } else {
+        // For default page: go back to root
+        window.history.pushState({}, '', '/');
+    }
     
     // Show main content and hide detail view
     const detailView = document.getElementById('detailView');
@@ -942,25 +1062,91 @@ function goBack() {
     window.scrollTo(0, 0);
 }
 
-// Handle hash changes (browser back/forward, direct links)
-window.addEventListener('hashchange', function() {
-    const hash = window.location.hash.substring(1); // Remove #
-    if (hash) {
-        renderDetailView(hash);
+// Extract application ID from URL (supports both hash and path-based routing)
+function getApplicationIdFromUrl() {
+    const path = window.location.pathname;
+    const isAllApplications = path.includes('allapplications');
+    
+    if (isAllApplications) {
+        // Extract from path: /allapplications/ApplicationId
+        const pathParts = path.split('/').filter(part => part); // Remove empty parts
+        const lastPart = pathParts[pathParts.length - 1];
+        
+        // Check if last part is an ApplicationId (starts with BHAR-)
+        if (lastPart && lastPart.startsWith('BHAR-')) {
+            return lastPart;
+        }
+        // Also check hash as fallback (in case server rewrites to hash)
+        const hash = window.location.hash.substring(1);
+        if (hash && hash.startsWith('BHAR-')) {
+            return hash;
+        }
+        return null;
+    } else {
+        // For default page: check both path and hash
+        // Path-based: /BHAR-XXXXX
+        const pathParts = path.split('/').filter(part => part);
+        const lastPart = pathParts[pathParts.length - 1];
+        if (lastPart && lastPart.startsWith('BHAR-')) {
+            return lastPart;
+        }
+        // Hash-based: #BHAR-XXXXX
+        const hash = window.location.hash.substring(1);
+        if (hash && hash.startsWith('BHAR-')) {
+            return hash;
+        }
+        return null;
+    }
+}
+
+// Handle URL changes (browser back/forward, direct links)
+window.addEventListener('popstate', function(event) {
+    const applicationId = getApplicationIdFromUrl();
+    if (applicationId) {
+        renderDetailView(applicationId);
     } else {
         goBack();
     }
 });
 
-// Check if there's a hash on page load (after data is loaded)
-// This will be called after loadApplications completes
-function checkInitialHash() {
-    const hash = window.location.hash.substring(1);
-    if (hash) {
-        // Small delay to ensure DOM is ready
-        setTimeout(() => {
+// Also handle hash changes for default page
+window.addEventListener('hashchange', function() {
+    const path = window.location.pathname;
+    const isAllApplications = path.includes('allapplications');
+    
+    if (!isAllApplications) {
+        // Only handle hash for default page
+        const hash = window.location.hash.substring(1);
+        if (hash) {
             renderDetailView(hash);
+        } else {
+            goBack();
+        }
+    }
+});
+
+// Check if there's an application ID in URL on page load
+function checkInitialHash() {
+    const applicationId = getApplicationIdFromUrl();
+    if (applicationId) {
+        // Wait for applications to be loaded before rendering
+        // This is especially important when opening in a new tab
+        const checkDataLoaded = setInterval(() => {
+            if (applications && applications.length > 0) {
+                clearInterval(checkDataLoaded);
+                renderDetailView(applicationId);
+            }
         }, 100);
+        
+        // Timeout after 5 seconds
+        setTimeout(() => {
+            clearInterval(checkDataLoaded);
+            if (applications && applications.length > 0) {
+                renderDetailView(applicationId);
+            } else {
+                console.error('Applications failed to load');
+            }
+        }, 5000);
     }
 }
 
@@ -987,6 +1173,115 @@ document.getElementById('clearFiltersBtn').addEventListener('click', function() 
 });
 document.getElementById('sortBy').addEventListener('change', sortApplications);
 
-// Load applications on page load
-loadApplications();
+// Handle "View All Applications" link
+const viewAllLink = document.getElementById('viewAllApplicationsLink');
+if (viewAllLink) {
+    viewAllLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        // No password check here - the page itself will handle it
+        const currentUrl = window.location.origin;
+        const allAppsUrl = currentUrl + '/allapplications';
+        window.open(allAppsUrl, '_blank');
+    });
+}
+
+// Check if password is required for allapplications page
+function checkAllApplicationsPassword() {
+    const path = window.location.pathname;
+    const isAllApplications = path.includes('allapplications');
+    
+    if (isAllApplications) {
+        // Check if password was already entered in this session
+        const passwordEntered = sessionStorage.getItem('allApplicationsPasswordEntered');
+        
+        if (passwordEntered !== 'true') {
+            // Show password prompt
+            showAllApplicationsPasswordPrompt();
+            return false; // Don't load applications yet
+        }
+    }
+    
+    // Password already entered or not on allapplications page
+    loadApplications();
+    return true;
+}
+
+// Show password prompt for allapplications page
+function showAllApplicationsPasswordPrompt() {
+    // Hide main content
+    const container = document.querySelector('.container');
+    if (container) {
+        container.style.display = 'none';
+    }
+    
+    // Get current origin for redirect link
+    const currentUrl = window.location.origin;
+    
+    // Create password overlay
+    const overlay = document.createElement('div');
+    overlay.id = 'allApplicationsPasswordOverlay';
+    overlay.className = 'password-overlay';
+    overlay.innerHTML = `
+        <div class="password-box">
+            <span class="lock-icon">🔒</span>
+            <h2>Protected Page</h2>
+            <p>This page contains all applications. Please enter the password to access.</p>
+            <input type="password" id="allApplicationsPasswordInput" placeholder="Enter password" autofocus>
+            <button onclick="checkAllApplicationsPasswordEntry()">Access</button>
+            <p id="allApplicationsPasswordError" class="password-error"></p>
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+                <p style="color: #666; font-size: 0.95em; margin-bottom: 15px;">Don't have access?</p>
+                <a href="${currentUrl}/" style="color: #667eea; text-decoration: none; font-weight: 600; font-size: 1em; transition: all 0.3s ease;" 
+                   onmouseover="this.style.textDecoration='underline'; this.style.color='#764ba2';" 
+                   onmouseout="this.style.textDecoration='none'; this.style.color='#667eea';">
+                    ← Back to Phase 1 Shortlisted Applications
+                </a>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(overlay);
+    
+    // Allow Enter key to submit
+    document.getElementById('allApplicationsPasswordInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            checkAllApplicationsPasswordEntry();
+        }
+    });
+}
+
+// Check password entry for allapplications page
+function checkAllApplicationsPasswordEntry() {
+    const passwordInput = document.getElementById('allApplicationsPasswordInput');
+    const errorMessage = document.getElementById('allApplicationsPasswordError');
+    const password = passwordInput.value;
+    
+    if (password === 'admin_BI2025') {
+        // Correct password - store in sessionStorage
+        sessionStorage.setItem('allApplicationsPasswordEntered', 'true');
+        
+        // Remove password overlay
+        const overlay = document.getElementById('allApplicationsPasswordOverlay');
+        if (overlay) {
+            overlay.remove();
+        }
+        
+        // Show main content
+        const container = document.querySelector('.container');
+        if (container) {
+            container.style.display = '';
+        }
+        
+        // Now load applications
+        loadApplications();
+    } else {
+        // Incorrect password
+        errorMessage.textContent = 'Incorrect password. Please try again.';
+        passwordInput.value = '';
+        passwordInput.focus();
+    }
+}
+
+// Load applications on page load (after password check if needed)
+checkAllApplicationsPassword();
 
