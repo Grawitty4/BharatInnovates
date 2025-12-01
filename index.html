@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bharat Innovates - Application Review Portal</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-container">
+                <div class="logo">
+                    <span class="logo-bharat">Bharat</span><span class="logo-innovates">Innovates</span>
+                </div>
+            </div>
+            <h1>Application Review Portal</h1>
+        </header>
+
+        <!-- Search and Filter Bar -->
+        <div class="search-filter-bar">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search by Application ID, Name, Venture Name, or Innovation Title...">
+                <button id="searchBtn">🔍 Search</button>
+                <button id="clearBtn">Clear</button>
+                <!-- View Toggle - moved to right side -->
+                <div class="view-toggle">
+                    <button class="view-btn-toggle active" id="gridViewBtn" onclick="setViewMode('grid')" title="Grid View">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <rect x="2" y="2" width="6" height="6" rx="1"/>
+                            <rect x="12" y="2" width="6" height="6" rx="1"/>
+                            <rect x="2" y="12" width="6" height="6" rx="1"/>
+                            <rect x="12" y="12" width="6" height="6" rx="1"/>
+                        </svg>
+                    </button>
+                    <button class="view-btn-toggle" id="listViewBtn" onclick="setViewMode('list')" title="List View">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <rect x="2" y="3" width="16" height="2" rx="1"/>
+                            <rect x="2" y="9" width="16" height="2" rx="1"/>
+                            <rect x="2" y="15" width="16" height="2" rx="1"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="filter-box">
+                <!-- Stats moved to left most -->
+                <div class="stats-bar">
+                    <span class="stat-compact">Total: <strong id="totalCount">0</strong></span>
+                    <span class="stat-compact">Showing: <strong id="showingCount">0</strong></span>
+                </div>
+                <select id="segmentFilter">
+                    <option value="">All Segments</option>
+                </select>
+                <select id="trlFilter">
+                    <option value="">All TRL Levels</option>
+                    <option value="1">TRL 1</option>
+                    <option value="2">TRL 2</option>
+                    <option value="3">TRL 3</option>
+                    <option value="4">TRL 4</option>
+                    <option value="5">TRL 5</option>
+                    <option value="6">TRL 6</option>
+                    <option value="7">TRL 7</option>
+                    <option value="8">TRL 8</option>
+                    <option value="9">TRL 9</option>
+                </select>
+                <select id="fundingFilter">
+                    <option value="">All Funding Status</option>
+                    <option value="Yes">Funded</option>
+                    <option value="No">Not Funded</option>
+                </select>
+                <select id="recognitionFilter">
+                    <option value="">All Recognition</option>
+                    <option value="Award Winners">Award Winners</option>
+                    <option value="Media recognized">Media recognized</option>
+                    <option value="Others">Others</option>
+                </select>
+                <select id="sortBy">
+                    <option value="">Sort By</option>
+                    <option value="most-funded">Most Funded</option>
+                    <option value="largest-team">Largest Team</option>
+                    <option value="alphabetical">Alphabetical (A-Z)</option>
+                    <option value="trl-highest">TRL Level (Highest)</option>
+                    <option value="most-awarded">Most Awarded</option>
+                    <option value="most-recognized">Most Recognized</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Applications Grid -->
+        <div class="applications-grid" id="applicationsGrid">
+            <div class="loading">Loading applications...</div>
+        </div>
+
+        <!-- Applications List -->
+        <div class="applications-list" id="applicationsList">
+            <div class="loading">Loading applications...</div>
+        </div>
+
+        <!-- Pagination -->
+        <div id="pagination"></div>
+
+        <!-- Application Detail Modal -->
+        <div id="detailModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div id="modalBody"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+
