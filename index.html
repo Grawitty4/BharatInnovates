@@ -29,7 +29,14 @@
                 <div class="sidebar-top">
                     <div class="sidebar-header">
                         <h2>Filters</h2>
-                        <button id="clearFiltersBtn" class="clear-filters-btn">Clear All</button>
+                        <div class="sidebar-header-actions">
+                            <button id="clearFiltersBtn" class="clear-filters-btn">Clear All</button>
+                            <button id="toggleFiltersBtn" class="toggle-filters-btn mobile-only" aria-label="Toggle filters">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                     
                     <!-- Search -->
@@ -57,7 +64,7 @@
                 </div>
 
                 <!-- Scrollable Filters Section -->
-                <div class="sidebar-filters">
+                <div class="sidebar-filters" id="sidebarFilters">
                     <!-- Segment Filter -->
                     <div class="filter-section">
                         <h3>Segment</h3>

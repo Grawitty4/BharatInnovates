@@ -551,7 +551,16 @@ function showDetail(applicationId) {
 }
 
 // Render detail view
+let isRendering = false; // Guard to prevent double rendering
+let lastRenderedId = null; // Track last rendered ID
+
 function renderDetailView(applicationId) {
+    // Prevent double rendering
+    if (isRendering && lastRenderedId === applicationId) {
+        console.log('Already rendering this application, skipping...');
+        return;
+    }
+    
     // Wait for applications to load if not loaded yet
     if (!applications || applications.length === 0) {
         console.log('Applications not loaded yet, waiting...');
@@ -561,6 +570,11 @@ function renderDetailView(applicationId) {
         }, 200);
         return;
     }
+    
+    // Set rendering flag
+    isRendering = true;
+    lastRenderedId = applicationId;
+    console.log('Rendering detail view for:', applicationId);
     
     const app = applications.find(a => a.ApplicationId === applicationId);
     if (!app) {
@@ -946,7 +960,11 @@ function renderDetailView(applicationId) {
         </div>
     `;
     
-    // Detail view is now shown via renderDetailView
+    // Reset rendering flag after a short delay to allow DOM updates
+    setTimeout(() => {
+        isRendering = false;
+        console.log('Finished rendering detail view for:', applicationId);
+    }, 100);
 }
 
 // Check if documents access is granted (per-application, not session-wide)
@@ -1099,41 +1117,64 @@ function getApplicationIdFromUrl() {
     }
 }
 
-// Handle URL changes (browser back/forward, direct links)
-window.addEventListener('popstate', function(event) {
-    const applicationId = getApplicationIdFromUrl();
-    if (applicationId) {
-        renderDetailView(applicationId);
-    } else {
-        goBack();
-    }
-});
+// Prevent duplicate event listeners
+let popstateListenerAttached = false;
+let hashchangeListenerAttached = false;
 
-// Also handle hash changes for default page
-window.addEventListener('hashchange', function() {
-    const path = window.location.pathname;
-    const isAllApplications = path.includes('allapplications');
-    
-    if (!isAllApplications) {
-        // Only handle hash for default page
-        const hash = window.location.hash.substring(1);
-        if (hash) {
-            renderDetailView(hash);
+// Handle URL changes (browser back/forward, direct links)
+if (!popstateListenerAttached) {
+    popstateListenerAttached = true;
+    window.addEventListener('popstate', function(event) {
+        const applicationId = getApplicationIdFromUrl();
+        if (applicationId) {
+            console.log('popstate event - rendering:', applicationId);
+            renderDetailView(applicationId);
         } else {
             goBack();
         }
-    }
-});
+    });
+}
+
+// Also handle hash changes for default page
+if (!hashchangeListenerAttached) {
+    hashchangeListenerAttached = true;
+    window.addEventListener('hashchange', function() {
+        const path = window.location.pathname;
+        const isAllApplications = path.includes('allapplications');
+        
+        if (!isAllApplications) {
+            // Only handle hash for default page
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                console.log('hashchange event - rendering:', hash);
+                renderDetailView(hash);
+            } else {
+                goBack();
+            }
+        }
+    });
+}
 
 // Check if there's an application ID in URL on page load
+let initialHashChecked = false; // Prevent multiple calls
+
 function checkInitialHash() {
+    if (initialHashChecked) {
+        console.log('Initial hash already checked, skipping...');
+        return;
+    }
+    
     const applicationId = getApplicationIdFromUrl();
     if (applicationId) {
+        initialHashChecked = true;
+        console.log('Checking initial hash for:', applicationId);
+        
         // Wait for applications to be loaded before rendering
         // This is especially important when opening in a new tab
         const checkDataLoaded = setInterval(() => {
             if (applications && applications.length > 0) {
                 clearInterval(checkDataLoaded);
+                console.log('Initial hash - data loaded, rendering:', applicationId);
                 renderDetailView(applicationId);
             }
         }, 100);
@@ -1142,11 +1183,15 @@ function checkInitialHash() {
         setTimeout(() => {
             clearInterval(checkDataLoaded);
             if (applications && applications.length > 0) {
+                console.log('Initial hash - timeout, rendering:', applicationId);
                 renderDetailView(applicationId);
             } else {
                 console.error('Applications failed to load');
+                initialHashChecked = false; // Allow retry
             }
         }, 5000);
+    } else {
+        initialHashChecked = true; // Mark as checked even if no hash
     }
 }
 
@@ -1282,6 +1327,96 @@ function checkAllApplicationsPasswordEntry() {
     }
 }
 
+// Toggle filters on mobile
+function setupMobileFiltersToggle() {
+    const toggleBtn = document.getElementById('toggleFiltersBtn');
+    const filtersSection = document.getElementById('sidebarFilters');
+    
+    console.log('Setting up mobile filters toggle...');
+    console.log('Toggle button found:', !!toggleBtn);
+    console.log('Filters section found:', !!filtersSection);
+    
+    if (!toggleBtn) {
+        console.error('Toggle button not found!');
+        return;
+    }
+    
+    if (!filtersSection) {
+        console.error('Filters section not found!');
+        return;
+    }
+    
+    // Function to update state based on screen size
+    function updateFilterState() {
+        const isMobile = window.innerWidth <= 768;
+        console.log('Screen width:', window.innerWidth, 'isMobile:', isMobile);
+        
+        if (isMobile) {
+            // On mobile, ensure collapsed initially (unless user has expanded it)
+            // Don't force collapse if user has already expanded
+            if (!filtersSection.classList.contains('expanded')) {
+                filtersSection.classList.remove('expanded');
+                toggleBtn.classList.add('collapsed');
+                console.log('Mobile: Filters collapsed (display: none)');
+            }
+        } else {
+            // Always expanded on desktop
+            filtersSection.classList.add('expanded');
+            toggleBtn.classList.remove('collapsed');
+            console.log('Desktop: Filters expanded');
+        }
+    }
+    
+    // Set initial state
+    updateFilterState();
+    
+    // Toggle on button click - Y Combinator style
+    toggleBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const isMobile = window.innerWidth <= 768;
+        if (isMobile) {
+            const wasExpanded = filtersSection.classList.contains('expanded');
+            const isNowExpanded = !wasExpanded;
+            
+            // Toggle the expanded class
+            filtersSection.classList.toggle('expanded');
+            toggleBtn.classList.toggle('collapsed');
+            
+            console.log('Toggle clicked. Was expanded:', wasExpanded, 'Now expanded:', isNowExpanded);
+            console.log('Filters section display:', window.getComputedStyle(filtersSection).display);
+            console.log('Has expanded class:', filtersSection.classList.contains('expanded'));
+            
+            // Force a reflow to ensure the animation triggers
+            void filtersSection.offsetHeight;
+        }
+    });
+    
+    // Update on window resize
+    let resizeTimer;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function() {
+            updateFilterState();
+        }, 250);
+    });
+}
+
+// Setup mobile filters toggle - call after DOM is ready
+function initializeMobileFilters() {
+    // Wait for DOM to be ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupMobileFiltersToggle);
+    } else {
+        // DOM is already ready, but wait a bit to ensure all elements are rendered
+        setTimeout(setupMobileFiltersToggle, 100);
+    }
+}
+
 // Load applications on page load (after password check if needed)
 checkAllApplicationsPassword();
+
+// Setup mobile filters toggle
+initializeMobileFilters();
 

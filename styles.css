@@ -155,6 +155,9 @@ body::before {
     margin-right: -10px; /* Offset padding to align with content */
     padding-left: 0;
     margin-left: 0;
+    /* Desktop: always visible */
+    display: flex;
+    flex-direction: column;
 }
 
 /* Custom scrollbar styling for filters section */
@@ -197,6 +200,13 @@ body::before {
     min-width: 0;
 }
 
+.sidebar-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
 .sidebar-header h2 {
     font-size: 1.4em;
     color: #333;
@@ -224,6 +234,41 @@ body::before {
     border-color: #667eea;
     color: #667eea;
     background: rgba(102, 126, 234, 0.05);
+}
+
+/* Toggle Filters Button (Mobile Only) */
+.toggle-filters-btn {
+    display: none; /* Hidden by default, shown only on mobile */
+    padding: 8px;
+    background: transparent;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    min-height: 36px;
+}
+
+.toggle-filters-btn:hover {
+    border-color: #667eea;
+    color: #667eea;
+    background: rgba(102, 126, 234, 0.05);
+}
+
+.toggle-filters-btn svg {
+    transition: transform 0.3s ease;
+}
+
+.toggle-filters-btn.collapsed svg {
+    transform: rotate(180deg);
+}
+
+/* Mobile only class */
+.mobile-only {
+    display: none;
 }
 
 .filter-section {
@@ -1281,8 +1326,121 @@ body::before {
     }
     
     .sidebar-top {
-        margin-bottom: 20px;
-        padding-bottom: 15px;
+        margin-bottom: 8px;
+        padding-bottom: 8px;
+    }
+    
+    /* Reduce sidebar header spacing on mobile */
+    .sidebar-header {
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+    }
+    
+    /* Reduce spacing in filter sections on mobile */
+    .sidebar-top .filter-section {
+        margin-bottom: 10px;
+    }
+    
+    .sidebar-top .filter-section:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    
+    /* Reduce stats sidebar spacing */
+    .sidebar-top .stats-sidebar {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        gap: 6px;
+    }
+    
+    .sidebar-top .stat-item {
+        padding: 4px 0;
+    }
+    
+    /* Reduce search box spacing */
+    .sidebar-top .search-box-sidebar {
+        margin-bottom: 0;
+    }
+    
+    /* Reduce filter section h3 margin on mobile */
+    .sidebar-top .filter-section h3 {
+        margin-bottom: 8px;
+    }
+    
+    /* Show toggle button on mobile */
+    .mobile-only {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Ensure toggle button is visible and properly styled on mobile */
+    .toggle-filters-btn.mobile-only {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        background: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        color: #666;
+        cursor: pointer;
+        min-width: 36px;
+        min-height: 36px;
+        flex-shrink: 0;
+        position: relative;
+        z-index: 10;
+    }
+    
+    /* Also target just the class for extra specificity */
+    .toggle-filters-btn {
+        display: flex !important;
+    }
+    
+    .toggle-filters-btn:hover {
+        border-color: #667eea;
+        color: #667eea;
+        background: rgba(102, 126, 234, 0.05);
+    }
+    
+    .toggle-filters-btn svg {
+        width: 20px;
+        height: 20px;
+        transition: transform 0.3s ease;
+    }
+    
+    .toggle-filters-btn.collapsed svg {
+        transform: rotate(180deg);
+    }
+    
+    /* Collapsible filters on mobile - Y Combinator style */
+    .sidebar-filters {
+        display: none; /* Hidden by default on mobile */
+    }
+    
+    .sidebar-filters.expanded {
+        display: flex !important; /* Show when expanded */
+        flex-direction: column;
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-right: 10px;
+        margin-right: -10px;
+        margin-top: 15px;
+        animation: slideDown 0.3s ease-out;
+    }
+    
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
     
     /* Main content - full width */
