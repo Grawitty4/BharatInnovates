@@ -1157,6 +1157,7 @@ if (!hashchangeListenerAttached) {
 
 // Check if there's an application ID in URL on page load
 let initialHashChecked = false; // Prevent multiple calls
+let initialHashRendered = false; // Track if initial hash has been rendered
 
 function checkInitialHash() {
     if (initialHashChecked) {
@@ -1167,6 +1168,7 @@ function checkInitialHash() {
     const applicationId = getApplicationIdFromUrl();
     if (applicationId) {
         initialHashChecked = true;
+        initialHashRendered = false; // Reset flag for this check
         console.log('Checking initial hash for:', applicationId);
         
         // Wait for applications to be loaded before rendering
@@ -1174,8 +1176,13 @@ function checkInitialHash() {
         const checkDataLoaded = setInterval(() => {
             if (applications && applications.length > 0) {
                 clearInterval(checkDataLoaded);
-                console.log('Initial hash - data loaded, rendering:', applicationId);
-                renderDetailView(applicationId);
+                if (!initialHashRendered) {
+                    initialHashRendered = true;
+                    console.log('Initial hash - data loaded, rendering:', applicationId);
+                    renderDetailView(applicationId);
+                } else {
+                    console.log('Initial hash - already rendered, skipping interval callback');
+                }
             }
         }, 100);
         
@@ -1183,11 +1190,17 @@ function checkInitialHash() {
         setTimeout(() => {
             clearInterval(checkDataLoaded);
             if (applications && applications.length > 0) {
-                console.log('Initial hash - timeout, rendering:', applicationId);
-                renderDetailView(applicationId);
+                if (!initialHashRendered) {
+                    initialHashRendered = true;
+                    console.log('Initial hash - timeout, rendering:', applicationId);
+                    renderDetailView(applicationId);
+                } else {
+                    console.log('Initial hash - already rendered, skipping timeout callback');
+                }
             } else {
                 console.error('Applications failed to load');
                 initialHashChecked = false; // Allow retry
+                initialHashRendered = false; // Reset for retry
             }
         }, 5000);
     } else {
