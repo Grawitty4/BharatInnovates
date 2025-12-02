@@ -677,10 +677,10 @@ body::before {
 }
 
 .app-title {
-    font-size: 1.3em;
+    font-size: 1.2em;
     font-weight: 600;
     color: #333;
-    margin: 15px 0 8px 0;
+    margin: 10px 0 8px 0;
     margin-right: 100px;
     line-height: 1.4;
     display: -webkit-box;
@@ -688,7 +688,8 @@ body::before {
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    min-height: 2.8em; /* Reserve space for 2 lines */
+    min-height: 3.36em; /* Reserve space for 2 lines (1.2em * 1.4 * 2) */
+    max-height: 3.36em; /* Prevent overflow */
 }
 
 .app-venture {
@@ -714,7 +715,7 @@ body::before {
     padding-top: 12px;
     border-top: 1px solid #e0e0e0;
     margin-bottom: 15px;
-    min-height: 120px; /* Reserve minimum space for details */
+    min-height: 100px; /* Reserve minimum space for details */
 }
 
 .app-detail-item {
@@ -745,7 +746,6 @@ body::before {
     border: none;
     border-radius: 12px;
     cursor: pointer;
-    width: 100%;
     font-size: 1em;
     font-weight: 600;
     transition: all 0.3s ease;
