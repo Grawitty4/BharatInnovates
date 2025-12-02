@@ -118,7 +118,6 @@ body::before {
     display: flex;
     gap: 20px;
     margin-top: 20px;
-    flex-wrap: wrap; /* Allow wrapping on mobile */
 }
 
 /* Left Sidebar - Filters */
@@ -139,8 +138,6 @@ body::before {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    flex: 1 1 100%; /* Full width on mobile */
-    min-width: 0; /* Allow shrinking */
 }
 
 /* Fixed top section (header, search, stats) */
@@ -355,7 +352,6 @@ body::before {
 .main-content {
     flex: 1;
     min-width: 0;
-    width: 100%; /* Full width on mobile */
 }
 
 /* Top Bar */
