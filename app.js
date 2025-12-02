@@ -37,10 +37,10 @@ function getDataFile() {
         console.log('  Href:', href);
         return '/Applications_1186_final_final.json'; // Use absolute path
     }
-    // Default view: load shortlisted applications (383 from CSV)
+    // Default view: load shortlisted applications (383 from CSV) - summarized version
     console.log('✓ Detected default page');
     console.log('  Pathname:', path);
-    return '/shortlisted_applications.json'; // Use absolute path
+    return '/shortlisted_applications_summarized.json'; // Use absolute path
 }
 
 // Load applications from JSON
@@ -109,7 +109,8 @@ function populateFilters() {
     const segments = new Set();
     
     applications.forEach(app => {
-        const segment = app['Select the primary segment for your innovation: (Select only one)'];
+        // Handle both old format and new summarized format
+        const segment = app.Segment || app['Select the primary segment for your innovation: (Select only one)'];
         if (segment && segment.trim()) segments.add(segment.trim());
     });
     
@@ -165,23 +166,46 @@ function sortApplications() {
     switch(sortBy) {
         case 'most-funded':
             appsToSort.sort((a, b) => {
-                // Convert to number, handling strings with commas or other formatting
-                const parseFunding = (value) => {
-                    if (value === null || value === undefined || value === '') return 0;
-                    if (typeof value === 'number') {
-                        return isNaN(value) ? 0 : value;
+                // Helper to extract funding amount from either format
+                const getFundingAmount = (app) => {
+                    // Old format: direct field
+                    if (app['Total Funding Raised']) {
+                        const value = app['Total Funding Raised'];
+                        if (typeof value === 'number') return isNaN(value) ? 0 : value;
+                        if (typeof value === 'string') {
+                            const cleaned = value.replace(/[^\d.-]/g, '');
+                            const parsed = parseFloat(cleaned);
+                            return isNaN(parsed) ? 0 : parsed;
+                        }
                     }
-                    if (typeof value === 'string') {
-                        // Remove commas, spaces, and other non-numeric characters except decimal point and minus
-                        const cleaned = value.toString().replace(/[^\d.-]/g, '');
-                        const parsed = parseFloat(cleaned);
-                        return isNaN(parsed) ? 0 : parsed;
+                    
+                    // New summarized format: extract from "Funding/Grants" text
+                    if (app['Traction and Achievements'] && app['Traction and Achievements']['Funding/Grants']) {
+                        const fundingText = app['Traction and Achievements']['Funding/Grants'];
+                        // Look for patterns like "Raised ₹200,000,000" or "₹200,000,000"
+                        const patterns = [
+                            /raised\s*₹?\s*([\d,]+)/i,
+                            /₹\s*([\d,]+)/,
+                            /([\d,]+)\s*(?:in funding|in grants)/i
+                        ];
+                        
+                        for (const pattern of patterns) {
+                            const match = fundingText.match(pattern);
+                            if (match) {
+                                const cleaned = match[1].replace(/,/g, '');
+                                const parsed = parseFloat(cleaned);
+                                if (!isNaN(parsed)) {
+                                    return parsed;
+                                }
+                            }
+                        }
                     }
+                    
                     return 0;
                 };
                 
-                const aFunding = parseFunding(a['Total Funding Raised']);
-                const bFunding = parseFunding(b['Total Funding Raised']);
+                const aFunding = getFundingAmount(a);
+                const bFunding = getFundingAmount(b);
                 
                 // Descending order (highest first)
                 return bFunding - aFunding;
@@ -189,22 +213,47 @@ function sortApplications() {
             break;
         case 'largest-team':
             appsToSort.sort((a, b) => {
-                const aTeam = a['Team Size (full-time equivalents)'] || 0;
-                const bTeam = b['Team Size (full-time equivalents)'] || 0;
+                // Helper to extract team size from either format
+                const getTeamSize = (app) => {
+                    // Old format: direct field
+                    if (app['Team Size (full-time equivalents)']) {
+                        const value = app['Team Size (full-time equivalents)'];
+                        if (typeof value === 'number') return isNaN(value) ? 0 : value;
+                        if (typeof value === 'string') {
+                            const parsed = parseInt(value);
+                            return isNaN(parsed) ? 0 : parsed;
+                        }
+                    }
+                    
+                    // New summarized format: extract from "Team" text
+                    if (app['Traction and Achievements'] && app['Traction and Achievements']['Team']) {
+                        const teamText = app['Traction and Achievements']['Team'];
+                        const match = teamText.match(/Team of (\d+)/i);
+                        if (match) {
+                            return parseInt(match[1]) || 0;
+                        }
+                    }
+                    
+                    return 0;
+                };
+                
+                const aTeam = getTeamSize(a);
+                const bTeam = getTeamSize(b);
                 return bTeam - aTeam;
             });
             break;
         case 'alphabetical':
             appsToSort.sort((a, b) => {
-                const aName = (a['Venture Name'] || a['Startup/Company Popular (Brand) Name (if any)'] || a['Innovation Title'] || '').toLowerCase();
-                const bName = (b['Venture Name'] || b['Startup/Company Popular (Brand) Name (if any)'] || b['Innovation Title'] || '').toLowerCase();
+                // Handle both old and new formats
+                const aName = (a['Company Name'] || a['Venture Name'] || a['Startup/Company Popular (Brand) Name (if any)'] || a['Innovation Title'] || '').toLowerCase();
+                const bName = (b['Company Name'] || b['Venture Name'] || b['Startup/Company Popular (Brand) Name (if any)'] || b['Innovation Title'] || '').toLowerCase();
                 return aName.localeCompare(bName);
             });
             break;
         case 'trl-highest':
             appsToSort.sort((a, b) => {
-                const aTRL = parseInt(a['Technology Readiness Level (TRL)'] || 0);
-                const bTRL = parseInt(b['Technology Readiness Level (TRL)'] || 0);
+                const aTRL = parseInt((a['TRL Level'] || a['Technology Readiness Level (TRL)'] || 0));
+                const bTRL = parseInt((b['TRL Level'] || b['Technology Readiness Level (TRL)'] || 0));
                 return bTRL - aTRL;
             });
             break;
@@ -217,8 +266,8 @@ function sortApplications() {
             break;
         case 'most-recognized':
             appsToSort.sort((a, b) => {
-                const aMedia = (a.media_coverage || []).length;
-                const bMedia = (b.media_coverage || []).length;
+                const aMedia = ((a['Media Coverage'] || a.media_coverage) || []).length;
+                const bMedia = ((b['Media Coverage'] || b.media_coverage) || []).length;
                 return bMedia - aMedia;
             });
             break;
@@ -241,36 +290,51 @@ function getFilteredApplications() {
     const selectedRecognition = Array.from(document.querySelectorAll('.filter-checkbox[data-filter="recognition"]:checked')).map(cb => cb.value);
     
     return applications.filter(app => {
+        // Handle both old format and new summarized format
+        const companyName = app['Company Name'] || app['Venture Name'] || '';
         const matchesSearch = !searchTerm || 
             app.ApplicationId?.toLowerCase().includes(searchTerm) ||
             app.Name?.toLowerCase().includes(searchTerm) ||
-            app['Venture Name']?.toLowerCase().includes(searchTerm) ||
+            companyName?.toLowerCase().includes(searchTerm) ||
             app['Innovation Title']?.toLowerCase().includes(searchTerm);
         
         // Segment filter: if no segments selected, show all; otherwise match if app segment is in selected list
+        // Handle both old format and new summarized format
+        const appSegment = app.Segment || app['Select the primary segment for your innovation: (Select only one)'];
         const matchesSegment = selectedSegments.length === 0 || 
-            (app['Select the primary segment for your innovation: (Select only one)'] && 
-             selectedSegments.includes(app['Select the primary segment for your innovation: (Select only one)'].trim()));
+            (appSegment && selectedSegments.includes(appSegment.trim()));
         
         // TRL filter: if no TRLs selected, show all; otherwise match if app TRL is in selected list
+        // Handle both old format and new summarized format
+        const appTRL = app['TRL Level'] || app['Technology Readiness Level (TRL)'];
         const matchesTRL = selectedTRLs.length === 0 || 
-            selectedTRLs.includes(String(app['Technology Readiness Level (TRL)']));
+            selectedTRLs.includes(String(appTRL));
         
         // Funding filter: if no funding statuses selected, show all; otherwise match if app funding status is in selected list
+        // For summarized format, check if there's funding info in Traction and Achievements
+        const fundingStatus = app['Are you funded by any VC/Angel/Govt?'] || 
+                             (app['Traction and Achievements'] && app['Traction and Achievements']['Funding/Grants'] && 
+                              !app['Traction and Achievements']['Funding/Grants'].includes('No funding') ? 'Yes' : null);
         const matchesFunding = selectedFunding.length === 0 || 
-            selectedFunding.includes(app['Are you funded by any VC/Angel/Govt?']);
+            (fundingStatus && selectedFunding.includes(fundingStatus));
         
         // Recognition filter logic
         let matchesRecognition = true;
         if (selectedRecognition.length > 0) {
-            const hasAwards = app.awards && app.awards.length > 0 && 
-                            app.awards.some(award => {
-                                return award['Award/Recognition'] || award['Awarding Body'] || award['Details'];
+            // Handle both old format (awards, media_coverage) and new summarized format (Traction and Achievements)
+            const awards = app.awards || [];
+            const mediaCoverage = app['Media Coverage'] || app.media_coverage || [];
+            
+            const hasAwards = awards.length > 0 && 
+                            awards.some(award => {
+                                return award['Award/Recognition'] || award['Awarding Body'] || award['Details'] || 
+                                       (typeof award === 'string' && award.trim());
                             });
             
-            const hasMedia = app.media_coverage && app.media_coverage.length > 0 && 
-                           app.media_coverage.some(media => {
-                                return media['Type'] || media['Website links'] || media['Details'];
+            const hasMedia = mediaCoverage.length > 0 && 
+                           mediaCoverage.some(media => {
+                                return media['Type'] || media['Website links'] || media['Details'] || 
+                                       (media.link && media.description);
                            });
             
             // Check if any selected recognition type matches
@@ -306,68 +370,138 @@ function renderApplications() {
     const paginatedApps = filteredApplications.slice(startIndex, endIndex);
     
     // Render grid view
-    grid.innerHTML = paginatedApps.map(app => `
+    grid.innerHTML = paginatedApps.map(app => {
+        // Handle both old format and new summarized format
+        const companyName = app['Company Name'] || app['Venture Name'] || app['Startup/Company Popular (Brand) Name (if any)'] || 'N/A';
+        const trl = app['TRL Level'] || app['Technology Readiness Level (TRL)'] || 'N/A';
+        const segment = app.Segment || app['Select the primary segment for your innovation: (Select only one)'] || 'N/A';
+        
+        // Extract team size from Traction and Achievements
+        let teamSize = app['Team Size (full-time equivalents)'] || null;
+        if (!teamSize && app['Traction and Achievements'] && app['Traction and Achievements']['Team']) {
+            const teamText = app['Traction and Achievements']['Team'];
+            // Extract number from text like "Team of 70 members"
+            const teamMatch = teamText.match(/Team of (\d+)/i);
+            if (teamMatch) {
+                teamSize = teamMatch[1];
+            }
+        }
+        teamSize = teamSize || 'N/A';
+        
+        // Extract funding status from Traction and Achievements
+        let funded = app['Are you funded by any VC/Angel/Govt?'] || null;
+        if (!funded && app['Traction and Achievements'] && app['Traction and Achievements']['Funding/Grants']) {
+            const fundingText = app['Traction and Achievements']['Funding/Grants'].toLowerCase();
+            // Check for negative indicators first
+            if (fundingText.includes('no funding') || fundingText.includes('not reported') || fundingText.includes('no grants')) {
+                funded = 'No';
+            } else if (fundingText.includes('raised') || fundingText.includes('received') || fundingText.includes('₹')) {
+                // Positive indicators: "raised", "received", or currency symbol
+                funded = 'Yes';
+            } else {
+                funded = 'No';
+            }
+        }
+        funded = funded || 'N/A';
+        
+        return `
         <div class="application-card">
             <div class="app-id">${app.ApplicationId}</div>
             <div class="app-title">${app['Innovation Title'] || 'No Title'}</div>
-            <div class="app-venture">${app['Venture Name'] || app['Startup/Company Popular (Brand) Name (if any)'] || 'N/A'}</div>
+            <div class="app-venture">${companyName}</div>
             <div class="app-details">
                 <div class="app-detail-item">
-                    <span class="app-detail-label">Applicant:</span>
-                    <span class="app-detail-value">${app.Name || 'N/A'}</span>
+                    <span class="app-detail-label">Segment:</span>
+                    <span class="app-detail-value">${segment}</span>
                 </div>
                 <div class="app-detail-item">
                     <span class="app-detail-label">TRL Level:</span>
-                    <span class="app-detail-value">${app['Technology Readiness Level (TRL)'] || 'N/A'}</span>
+                    <span class="app-detail-value">${trl}</span>
                 </div>
                 <div class="app-detail-item">
                     <span class="app-detail-label">Team Size:</span>
-                    <span class="app-detail-value">${app['Team Size (full-time equivalents)'] || 'N/A'}</span>
+                    <span class="app-detail-value">${teamSize}</span>
                 </div>
                 <div class="app-detail-item">
                     <span class="app-detail-label">Funded:</span>
-                    <span class="app-detail-value">${app['Are you funded by any VC/Angel/Govt?'] || 'N/A'}</span>
+                    <span class="app-detail-value">${funded}</span>
                 </div>
             </div>
             <button class="view-btn" onclick="openApplicationInNewTab('${app.ApplicationId}')">View Details</button>
         </div>
-    `).join('');
+        `;
+    }).join('');
     
     // Render list view
     if (list) {
-        list.innerHTML = paginatedApps.map(app => `
+        list.innerHTML = paginatedApps.map(app => {
+            // Handle both old format and new summarized format
+            const companyName = app['Company Name'] || app['Venture Name'] || app['Startup/Company Popular (Brand) Name (if any)'] || 'N/A';
+            const trl = app['TRL Level'] || app['Technology Readiness Level (TRL)'] || 'N/A';
+            const segment = app.Segment || app['Select the primary segment for your innovation: (Select only one)'] || 'N/A';
+            const awards = app.awards || [];
+            const mediaCoverage = app['Media Coverage'] || app.media_coverage || [];
+            
+            // Extract team size from Traction and Achievements
+            let teamSize = app['Team Size (full-time equivalents)'] || null;
+            if (!teamSize && app['Traction and Achievements'] && app['Traction and Achievements']['Team']) {
+                const teamText = app['Traction and Achievements']['Team'];
+                const teamMatch = teamText.match(/Team of (\d+)/i);
+                if (teamMatch) {
+                    teamSize = teamMatch[1];
+                }
+            }
+            teamSize = teamSize || 'N/A';
+            
+            // Extract funding status from Traction and Achievements
+            let funded = app['Are you funded by any VC/Angel/Govt?'] || null;
+            if (!funded && app['Traction and Achievements'] && app['Traction and Achievements']['Funding/Grants']) {
+                const fundingText = app['Traction and Achievements']['Funding/Grants'].toLowerCase();
+                // Check for negative indicators first
+                if (fundingText.includes('no funding') || fundingText.includes('not reported') || fundingText.includes('no grants')) {
+                    funded = 'No';
+                } else if (fundingText.includes('raised') || fundingText.includes('received') || fundingText.includes('₹')) {
+                    // Positive indicators: "raised", "received", or currency symbol
+                    funded = 'Yes';
+                } else {
+                    funded = 'No';
+                }
+            }
+            funded = funded || 'N/A';
+            
+            return `
             <div class="application-list-item">
                 <div class="list-item-id">${app.ApplicationId}</div>
                 <div class="list-item-content">
                     <h3 class="list-item-title">${app['Innovation Title'] || 'No Title'}</h3>
-                    <div class="list-item-venture">${app['Venture Name'] || app['Startup/Company Popular (Brand) Name (if any)'] || 'N/A'}</div>
+                    <div class="list-item-venture">${companyName}</div>
                     <div class="list-item-details">
                         <div class="list-item-detail">
-                            <span class="list-item-detail-label">Applicant:</span>
-                            <span class="list-item-detail-value">${app.Name || 'N/A'}</span>
+                            <span class="list-item-detail-label">Segment:</span>
+                            <span class="list-item-detail-value">${segment}</span>
                         </div>
                         <div class="list-item-detail">
                             <span class="list-item-detail-label">TRL:</span>
-                            <span class="list-item-detail-value">${app['Technology Readiness Level (TRL)'] || 'N/A'}</span>
+                            <span class="list-item-detail-value">${trl}</span>
                         </div>
                         <div class="list-item-detail">
                             <span class="list-item-detail-label">Team Size:</span>
-                            <span class="list-item-detail-value">${app['Team Size (full-time equivalents)'] || 'N/A'}</span>
+                            <span class="list-item-detail-value">${teamSize}</span>
                         </div>
                         <div class="list-item-detail">
                             <span class="list-item-detail-label">Funded:</span>
-                            <span class="list-item-detail-value">${app['Are you funded by any VC/Angel/Govt?'] || 'N/A'}</span>
+                            <span class="list-item-detail-value">${funded}</span>
                         </div>
-                        ${app.awards && app.awards.length > 0 ? `
+                        ${awards.length > 0 ? `
                         <div class="list-item-detail">
                             <span class="list-item-detail-label">Awards:</span>
-                            <span class="list-item-detail-value">${app.awards.length}</span>
+                            <span class="list-item-detail-value">${awards.length}</span>
                         </div>
                         ` : ''}
-                        ${app.media_coverage && app.media_coverage.length > 0 ? `
+                        ${mediaCoverage.length > 0 ? `
                         <div class="list-item-detail">
                             <span class="list-item-detail-label">Media:</span>
-                            <span class="list-item-detail-value">${app.media_coverage.length}</span>
+                            <span class="list-item-detail-value">${mediaCoverage.length}</span>
                         </div>
                         ` : ''}
                     </div>
@@ -376,7 +510,8 @@ function renderApplications() {
                     <button class="list-view-btn" onclick="openApplicationInNewTab('${app.ApplicationId}')">View Details</button>
                 </div>
             </div>
-        `).join('');
+            `;
+        }).join('');
     }
     
     // Render pagination (totalPages already calculated above)
@@ -600,7 +735,205 @@ function renderDetailView(applicationId) {
     // Reset scroll position
     window.scrollTo(0, 0);
     
-    detailBody.innerHTML = `
+    // Check if this is summarized data structure
+    const isSummarized = app.About !== undefined;
+    
+    if (isSummarized) {
+        // New summarized format - Card-based design
+        detailBody.innerHTML = `
+            <!-- Hero Section Card -->
+            <div class="detail-hero-card">
+                <h1 class="detail-hero-title">${app['Innovation Title'] || 'Application Details'}</h1>
+                <div class="detail-meta-badges">
+                    <span class="detail-badge detail-badge-id">${app.ApplicationId}</span>
+                    ${app.Segment ? `<span class="detail-badge detail-badge-segment">${app.Segment}</span>` : ''}
+                    ${app['TRL Level'] ? `<span class="detail-badge detail-badge-trl">TRL ${app['TRL Level']}</span>` : ''}
+                </div>
+            </div>
+
+            <!-- About Card -->
+            <div class="detail-card">
+                <h2 class="detail-card-title">About</h2>
+                <div class="about-content">
+                    <p>${app.About.paragraph1 || 'No description available.'}</p>
+                    ${app.About.paragraph2 ? `<p>${app.About.paragraph2}</p>` : ''}
+                </div>
+            </div>
+
+            <!-- Traction and Achievements Card -->
+            <div class="detail-card">
+                <h2 class="detail-card-title">Traction and Achievements</h2>
+                <div class="traction-grid">
+                    <div class="traction-card">
+                        <div class="traction-icon">💰</div>
+                        <h3 class="traction-title">Funding / Grants</h3>
+                        <p class="traction-text">${app['Traction and Achievements']['Funding/Grants'] || 'No funding or grants reported.'}</p>
+                    </div>
+                    <div class="traction-card">
+                        <div class="traction-icon">📜</div>
+                        <h3 class="traction-title">Patents & IP</h3>
+                        <p class="traction-text">${app['Traction and Achievements']['Patents & IP'] || 'No patent information available.'}</p>
+                    </div>
+                    <div class="traction-card">
+                        <div class="traction-icon">🏆</div>
+                        <h3 class="traction-title">Awards and Achievements</h3>
+                        <p class="traction-text">${app['Traction and Achievements']['Awards and Achievements'] || 'No awards reported.'}</p>
+                    </div>
+                    <div class="traction-card">
+                        <div class="traction-icon">👥</div>
+                        <h3 class="traction-title">Team</h3>
+                        <p class="traction-text">${app['Traction and Achievements']['Team'] || 'Team information not available.'}</p>
+                    </div>
+                </div>
+            </div>
+
+            ${app['Media Coverage'] && app['Media Coverage'].length > 0 ? `
+            <!-- Media Coverage Card -->
+            <div class="detail-card">
+                <h2 class="detail-card-title">Media Coverage & Other Links</h2>
+                <div class="media-links-grid">
+                    ${app['Media Coverage'].map(media => `
+                        <a href="${media.link}" target="_blank" class="media-link-card">
+                            <span class="media-link-icon">🔗</span>
+                            <span class="media-link-text">${media.description}</span>
+                            <span class="media-link-arrow">→</span>
+                        </a>
+                    `).join('')}
+                </div>
+            </div>
+            ` : ''}
+
+            ${app['Team Members'] && app['Team Members'].length > 0 ? `
+            <!-- Team Card -->
+            <div class="detail-card">
+                <h2 class="detail-card-title">Team</h2>
+                <div class="team-cards-grid">
+                    ${app['Team Members'].map(member => `
+                        <div class="team-member-card">
+                            <div class="team-member-header">
+                                <div class="team-member-avatar">${(member.name || 'T').charAt(0).toUpperCase()}</div>
+                                <div class="team-member-info">
+                                    <h3 class="team-member-name">${member.name}</h3>
+                                    ${member.role ? `<p class="team-role">${member.role}</p>` : ''}
+                                </div>
+                            </div>
+                            ${member.credentials ? `<p class="team-credentials">${member.credentials}</p>` : ''}
+                            ${member.email ? `<a href="mailto:${member.email}" class="team-contact-link">${member.email}</a>` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            ` : ''}
+
+            <!-- Documents & Links Card -->
+            <div class="detail-card">
+                <h2 class="detail-card-title">Documents & Links</h2>
+                ${checkDocumentsAccess() ? `
+                <div class="detail-grid" id="documentsContent">
+                    ${app['Original Data'] && app['Original Data']['Demo Video'] ? `
+                    <div class="detail-item">
+                        <span class="detail-label">Demo Video</span>
+                        <span class="detail-value"><a href="${app['Original Data']['Demo Video']}" target="_blank">View Video</a></span>
+                    </div>
+                    ` : ''}
+                    ${app['Original Data'] && app['Original Data']['High Res Video'] ? `
+                    <div class="detail-item">
+                        <span class="detail-label">High Res Video</span>
+                        <span class="detail-value"><a href="${app['Original Data']['High Res Video']}" target="_blank">View Video</a></span>
+                    </div>
+                    ` : ''}
+                    ${app['Original Data'] && app['Original Data']['Presentation Deck'] ? `
+                    <div class="detail-item">
+                        <span class="detail-label">Presentation Deck</span>
+                        <span class="detail-value"><a href="${app['Original Data']['Presentation Deck']}" target="_blank">View Deck</a></span>
+                    </div>
+                    ` : ''}
+                    ${app['Original Data'] && app['Original Data']['Patent Documentation'] ? `
+                    <div class="detail-item">
+                        <span class="detail-label">Patent Documentation</span>
+                        <span class="detail-value"><a href="${app['Original Data']['Patent Documentation']}" target="_blank">View Document</a></span>
+                    </div>
+                    ` : ''}
+                    ${app['Original Data'] && app['Original Data']['Publications'] ? `
+                    <div class="detail-item">
+                        <span class="detail-label">Publications</span>
+                        <span class="detail-value"><a href="${app['Original Data']['Publications']}" target="_blank">View Publications</a></span>
+                    </div>
+                    ` : ''}
+                    ${app['Original Data'] && app['Original Data']['Team CVs'] ? `
+                    <div class="detail-item">
+                        <span class="detail-label">Team CVs</span>
+                        <span class="detail-value"><a href="${app['Original Data']['Team CVs']}" target="_blank">View CVs</a></span>
+                    </div>
+                    ` : ''}
+                </div>
+                ` : `
+                <div class="password-lock-screen" id="documentsLockScreen">
+                    <div class="lock-icon">🔒</div>
+                    <h4>Confidential Information</h4>
+                    <p>Please enter credentials to access</p>
+                    <div class="password-input-group">
+                        <input type="password" id="documentsPassword" placeholder="Enter password" class="password-input">
+                        <button onclick="unlockDocuments('${app.ApplicationId}')" class="unlock-btn">Unlock</button>
+                    </div>
+                    <div id="passwordError" class="password-error" style="display: none;">Incorrect password. Please try again.</div>
+                </div>
+                <div class="detail-grid" id="documentsContent" style="display: none;">
+                    ${app['Original Data'] && app['Original Data']['Demo Video'] ? `
+                    <div class="detail-item">
+                        <span class="detail-label">Demo Video</span>
+                        <span class="detail-value"><a href="${app['Original Data']['Demo Video']}" target="_blank">View Video</a></span>
+                    </div>
+                    ` : ''}
+                    ${app['Original Data'] && app['Original Data']['High Res Video'] ? `
+                    <div class="detail-item">
+                        <span class="detail-label">High Res Video</span>
+                        <span class="detail-value"><a href="${app['Original Data']['High Res Video']}" target="_blank">View Video</a></span>
+                    </div>
+                    ` : ''}
+                    ${app['Original Data'] && app['Original Data']['Presentation Deck'] ? `
+                    <div class="detail-item">
+                        <span class="detail-label">Presentation Deck</span>
+                        <span class="detail-value"><a href="${app['Original Data']['Presentation Deck']}" target="_blank">View Deck</a></span>
+                    </div>
+                    ` : ''}
+                    ${app['Original Data'] && app['Original Data']['Patent Documentation'] ? `
+                    <div class="detail-item">
+                        <span class="detail-label">Patent Documentation</span>
+                        <span class="detail-value"><a href="${app['Original Data']['Patent Documentation']}" target="_blank">View Document</a></span>
+                    </div>
+                    ` : ''}
+                    ${app['Original Data'] && app['Original Data']['Publications'] ? `
+                    <div class="detail-item">
+                        <span class="detail-label">Publications</span>
+                        <span class="detail-value"><a href="${app['Original Data']['Publications']}" target="_blank">View Publications</a></span>
+                    </div>
+                    ` : ''}
+                    ${app['Original Data'] && app['Original Data']['Team CVs'] ? `
+                    <div class="detail-item">
+                        <span class="detail-label">Team CVs</span>
+                        <span class="detail-value"><a href="${app['Original Data']['Team CVs']}" target="_blank">View CVs</a></span>
+                    </div>
+                    ` : ''}
+                </div>
+                `}
+            </div>
+
+            <!-- Review Comments Card -->
+            <div class="detail-card">
+                <h2 class="detail-card-title">Review Comments</h2>
+                <div class="comment-form">
+                    <textarea id="commentText" placeholder="Add your review comment here..."></textarea>
+                    <button onclick="addComment('${app.ApplicationId}')">Add Comment</button>
+                </div>
+                <div class="comments-list" id="commentsList-${app.ApplicationId}">
+                    ${renderComments(app.ApplicationId)}
+                </div>
+            </div>
+        `;
+    } else {
+        // Old format - keep existing rendering for allapplications page
+        detailBody.innerHTML = `
         <div class="detail-section">
             <h2>${app['Innovation Title'] || 'Application Details'}</h2>
             <div class="detail-grid">
@@ -831,134 +1164,111 @@ function renderDetailView(applicationId) {
         </div>
         ` : ''}
 
-        <div class="detail-section">
-            <h3>Documents & Links</h3>
-            ${checkDocumentsAccess() ? `
-            <div class="detail-grid" id="documentsContent">
-                ${app['Innovation/Product Demo Video'] ? `
-                <div class="detail-item">
-                    <span class="detail-label">Demo Video</span>
-                    <span class="detail-value"><a href="${app['Innovation/Product Demo Video']}" target="_blank">View Video</a></span>
+            <div class="detail-section">
+                <h3>Documents & Links</h3>
+                ${checkDocumentsAccess() ? `
+                <div class="detail-grid" id="documentsContent">
+                    ${app['Original Data'] && app['Original Data']['Demo Video'] ? `
+                    <div class="detail-item">
+                        <span class="detail-label">Demo Video</span>
+                        <span class="detail-value"><a href="${app['Original Data']['Demo Video']}" target="_blank">View Video</a></span>
+                    </div>
+                    ` : ''}
+                    ${app['Original Data'] && app['Original Data']['High Res Video'] ? `
+                    <div class="detail-item">
+                        <span class="detail-label">High Res Video</span>
+                        <span class="detail-value"><a href="${app['Original Data']['High Res Video']}" target="_blank">View Video</a></span>
+                    </div>
+                    ` : ''}
+                    ${app['Original Data'] && app['Original Data']['Presentation Deck'] ? `
+                    <div class="detail-item">
+                        <span class="detail-label">Presentation Deck</span>
+                        <span class="detail-value"><a href="${app['Original Data']['Presentation Deck']}" target="_blank">View Deck</a></span>
+                    </div>
+                    ` : ''}
+                    ${app['Original Data'] && app['Original Data']['Patent Documentation'] ? `
+                    <div class="detail-item">
+                        <span class="detail-label">Patent Documentation</span>
+                        <span class="detail-value"><a href="${app['Original Data']['Patent Documentation']}" target="_blank">View Document</a></span>
+                    </div>
+                    ` : ''}
+                    ${app['Original Data'] && app['Original Data']['Publications'] ? `
+                    <div class="detail-item">
+                        <span class="detail-label">Publications</span>
+                        <span class="detail-value"><a href="${app['Original Data']['Publications']}" target="_blank">View Publications</a></span>
+                    </div>
+                    ` : ''}
+                    ${app['Original Data'] && app['Original Data']['Team CVs'] ? `
+                    <div class="detail-item">
+                        <span class="detail-label">Team CVs</span>
+                        <span class="detail-value"><a href="${app['Original Data']['Team CVs']}" target="_blank">View CVs</a></span>
+                    </div>
+                    ` : ''}
                 </div>
-                ` : ''}
-                ${app['Link to high resolution video file'] ? `
-                <div class="detail-item">
-                    <span class="detail-label">High Res Video</span>
-                    <span class="detail-value"><a href="${app['Link to high resolution video file']}" target="_blank">View Video</a></span>
+                ` : `
+                <div class="password-lock-screen" id="documentsLockScreen">
+                    <div class="lock-icon">🔒</div>
+                    <h4>Confidential Information</h4>
+                    <p>Please enter credentials to access</p>
+                    <div class="password-input-group">
+                        <input type="password" id="documentsPassword" placeholder="Enter password" class="password-input">
+                        <button onclick="unlockDocuments('${app.ApplicationId}')" class="unlock-btn">Unlock</button>
+                    </div>
+                    <div id="passwordError" class="password-error" style="display: none;">Incorrect password. Please try again.</div>
                 </div>
-                ` : ''}
-                ${app['Presentation Deck (Max 15 slides)'] ? `
-                <div class="detail-item">
-                    <span class="detail-label">Presentation Deck</span>
-                    <span class="detail-value"><a href="${app['Presentation Deck (Max 15 slides)']}" target="_blank">View Deck</a></span>
+                <div class="detail-grid" id="documentsContent" style="display: none;">
+                    ${app['Original Data'] && app['Original Data']['Demo Video'] ? `
+                    <div class="detail-item">
+                        <span class="detail-label">Demo Video</span>
+                        <span class="detail-value"><a href="${app['Original Data']['Demo Video']}" target="_blank">View Video</a></span>
+                    </div>
+                    ` : ''}
+                    ${app['Original Data'] && app['Original Data']['High Res Video'] ? `
+                    <div class="detail-item">
+                        <span class="detail-label">High Res Video</span>
+                        <span class="detail-value"><a href="${app['Original Data']['High Res Video']}" target="_blank">View Video</a></span>
+                    </div>
+                    ` : ''}
+                    ${app['Original Data'] && app['Original Data']['Presentation Deck'] ? `
+                    <div class="detail-item">
+                        <span class="detail-label">Presentation Deck</span>
+                        <span class="detail-value"><a href="${app['Original Data']['Presentation Deck']}" target="_blank">View Deck</a></span>
+                    </div>
+                    ` : ''}
+                    ${app['Original Data'] && app['Original Data']['Patent Documentation'] ? `
+                    <div class="detail-item">
+                        <span class="detail-label">Patent Documentation</span>
+                        <span class="detail-value"><a href="${app['Original Data']['Patent Documentation']}" target="_blank">View Document</a></span>
+                    </div>
+                    ` : ''}
+                    ${app['Original Data'] && app['Original Data']['Publications'] ? `
+                    <div class="detail-item">
+                        <span class="detail-label">Publications</span>
+                        <span class="detail-value"><a href="${app['Original Data']['Publications']}" target="_blank">View Publications</a></span>
+                    </div>
+                    ` : ''}
+                    ${app['Original Data'] && app['Original Data']['Team CVs'] ? `
+                    <div class="detail-item">
+                        <span class="detail-label">Team CVs</span>
+                        <span class="detail-value"><a href="${app['Original Data']['Team CVs']}" target="_blank">View CVs</a></span>
+                    </div>
+                    ` : ''}
                 </div>
-                ` : ''}
-                ${app['Patent Documentation'] ? `
-                <div class="detail-item">
-                    <span class="detail-label">Patent Documentation</span>
-                    <span class="detail-value"><a href="${app['Patent Documentation']}" target="_blank">View Document</a></span>
-                </div>
-                ` : ''}
-                ${app['Publications'] ? `
-                <div class="detail-item">
-                    <span class="detail-label">Publications</span>
-                    <span class="detail-value"><a href="${app['Publications']}" target="_blank">View Publications</a></span>
-                </div>
-                ` : ''}
-                ${app['Team CVs (One single PDF)'] ? `
-                <div class="detail-item">
-                    <span class="detail-label">Team CVs</span>
-                    <span class="detail-value"><a href="${app['Team CVs (One single PDF)']}" target="_blank">View CVs</a></span>
-                </div>
-                ` : ''}
-                ${app['Company Registration Certificate (for startups)'] ? `
-                <div class="detail-item">
-                    <span class="detail-label">Registration Certificate</span>
-                    <span class="detail-value"><a href="${app['Company Registration Certificate (for startups)']}" target="_blank">View Certificate</a></span>
-                </div>
-                ` : ''}
-                ${app['Equity holding pattern (Upload cap table showing Indian founders hold >51%).'] ? `
-                <div class="detail-item">
-                    <span class="detail-label">Equity Holding Pattern</span>
-                    <span class="detail-value"><a href="${app['Equity holding pattern (Upload cap table showing Indian founders hold >51%).']}" target="_blank">View Document</a></span>
-                </div>
-                ` : ''}
+                `}
             </div>
-            ` : `
-            <div class="password-lock-screen" id="documentsLockScreen">
-                <div class="lock-icon">🔒</div>
-                <h4>Confidential Information</h4>
-                <p>Please enter credentials to access</p>
-                <div class="password-input-group">
-                    <input type="password" id="documentsPassword" placeholder="Enter password" class="password-input">
-                    <button onclick="unlockDocuments('${app.ApplicationId}')" class="unlock-btn">Unlock</button>
-                </div>
-                <div id="passwordError" class="password-error" style="display: none;">Incorrect password. Please try again.</div>
-            </div>
-            <div class="detail-grid" id="documentsContent" style="display: none;">
-                ${app['Innovation/Product Demo Video'] ? `
-                <div class="detail-item">
-                    <span class="detail-label">Demo Video</span>
-                    <span class="detail-value"><a href="${app['Innovation/Product Demo Video']}" target="_blank">View Video</a></span>
-                </div>
-                ` : ''}
-                ${app['Link to high resolution video file'] ? `
-                <div class="detail-item">
-                    <span class="detail-label">High Res Video</span>
-                    <span class="detail-value"><a href="${app['Link to high resolution video file']}" target="_blank">View Video</a></span>
-                </div>
-                ` : ''}
-                ${app['Presentation Deck (Max 15 slides)'] ? `
-                <div class="detail-item">
-                    <span class="detail-label">Presentation Deck</span>
-                    <span class="detail-value"><a href="${app['Presentation Deck (Max 15 slides)']}" target="_blank">View Deck</a></span>
-                </div>
-                ` : ''}
-                ${app['Patent Documentation'] ? `
-                <div class="detail-item">
-                    <span class="detail-label">Patent Documentation</span>
-                    <span class="detail-value"><a href="${app['Patent Documentation']}" target="_blank">View Document</a></span>
-                </div>
-                ` : ''}
-                ${app['Publications'] ? `
-                <div class="detail-item">
-                    <span class="detail-label">Publications</span>
-                    <span class="detail-value"><a href="${app['Publications']}" target="_blank">View Publications</a></span>
-                </div>
-                ` : ''}
-                ${app['Team CVs (One single PDF)'] ? `
-                <div class="detail-item">
-                    <span class="detail-label">Team CVs</span>
-                    <span class="detail-value"><a href="${app['Team CVs (One single PDF)']}" target="_blank">View CVs</a></span>
-                </div>
-                ` : ''}
-                ${app['Company Registration Certificate (for startups)'] ? `
-                <div class="detail-item">
-                    <span class="detail-label">Registration Certificate</span>
-                    <span class="detail-value"><a href="${app['Company Registration Certificate (for startups)']}" target="_blank">View Certificate</a></span>
-                </div>
-                ` : ''}
-                ${app['Equity holding pattern (Upload cap table showing Indian founders hold >51%).'] ? `
-                <div class="detail-item">
-                    <span class="detail-label">Equity Holding Pattern</span>
-                    <span class="detail-value"><a href="${app['Equity holding pattern (Upload cap table showing Indian founders hold >51%).']}" target="_blank">View Document</a></span>
-                </div>
-                ` : ''}
-            </div>
-            `}
-        </div>
 
-        <div class="modal-section comments-section">
-            <h3>Review Comments</h3>
-            <div class="comment-form">
-                <textarea id="commentText" placeholder="Add your review comment here..."></textarea>
-                <button onclick="addComment('${app.ApplicationId}')">Add Comment</button>
+            <div class="modal-section comments-section">
+                <h3>Review Comments</h3>
+                <div class="comment-form">
+                    <textarea id="commentText" placeholder="Add your review comment here..."></textarea>
+                    <button onclick="addComment('${app.ApplicationId}')">Add Comment</button>
+                </div>
+                <div class="comments-list" id="commentsList-${app.ApplicationId}">
+                    ${renderComments(app.ApplicationId)}
+                </div>
             </div>
-            <div class="comments-list" id="commentsList-${app.ApplicationId}">
-                ${renderComments(app.ApplicationId)}
-            </div>
-        </div>
-    `;
+        `;
+    }
     
     // Reset rendering flag after a short delay to allow DOM updates
     setTimeout(() => {
