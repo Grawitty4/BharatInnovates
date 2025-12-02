@@ -550,7 +550,8 @@ body::before {
 }
 
 .list-item-detail-label {
-    font-weight: 500;
+    font-weight: 700; /* Bold for better legibility */
+    color: #333;
 }
 
 .list-item-detail-value {
@@ -725,8 +726,8 @@ body::before {
 }
 
 .app-detail-label {
-    color: #666;
-    font-weight: 500;
+    color: #333;
+    font-weight: 700; /* Bold for better legibility */
 }
 
 .app-detail-value {
@@ -858,6 +859,7 @@ body::before {
 .detail-section h3 {
     color: #333;
     font-size: 1.3em;
+    font-weight: 700; /* Bold for better visibility */
     margin: 20px 0 10px 0;
 }
 
@@ -1040,9 +1042,9 @@ body::before {
 }
 
 .detail-label {
-    color: #666;
-    font-weight: 500;
-    font-size: 0.9em;
+    color: #333;
+    font-weight: 700; /* Bold for better legibility */
+    font-size: 0.95em;
 }
 
 .detail-value {
