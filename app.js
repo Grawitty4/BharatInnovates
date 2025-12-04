@@ -794,9 +794,14 @@ function renderDetailView(applicationId) {
                 <div class="media-links-grid">
                     ${app['Media Coverage'].map(media => `
                         <a href="${media.link}" target="_blank" class="media-link-card">
-                            <span class="media-link-icon">🔗</span>
-                            <span class="media-link-text">${media.description}</span>
-                            <span class="media-link-arrow">→</span>
+                            <div class="media-link-header">
+                                <span class="media-link-type">${media.type || 'Media Coverage'}</span>
+                            </div>
+                            <div class="media-link-content">
+                                <span class="media-link-icon">🔗</span>
+                                <span class="media-link-text">${media.description || 'View Link'}</span>
+                                <span class="media-link-arrow">→</span>
+                            </div>
                         </a>
                     `).join('')}
                 </div>
